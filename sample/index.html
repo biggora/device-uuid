@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../lib/device-uuid.js"></script>
+</head>
+<body>
+<div id="fingerprint"></div>
+<div id="fingerprint-2"></div>
+<script>
+    var uuid = new DeviceUUID().get();
+    //
+    console.log(uuid)
+    console.log('3a91f950-dec8-4688-ba14-5b7bbfc7a563')
+    document.getElementById("fingerprint").innerHTML = uuid;
+    var du = new DeviceUUID().parse();
+    var dua = [
+        du.language,
+        du.platform,
+        du.os,
+        du.cpuCores,
+        du.isAuthoritative,
+        du.silkAccelerated,
+        du.isKindleFire,
+        du.isDesktop,
+        du.isMobile,
+        du.isTablet,
+        du.isWindows,
+        du.isLinux,
+        du.isLinux64,
+        du.isMac,
+        du.isiPad,
+        du.isiPhone,
+        du.isiPod,
+        du.isSmartTV,
+        du.pixelDepth,
+        du.isTouchScreen
+    ];
+    console.log(dua)
+    var uuid2 = du.hashMD5(dua.join(':'));
+    document.getElementById("fingerprint-2").innerHTML = uuid2;
+</script>
+</body>
+</html>

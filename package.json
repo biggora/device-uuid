@@ -1,0 +1,54 @@
+{
+  "name": "device-uuid",
+  "description": "Fast browser device uuid generation library.",
+  "version": "1.0.0",
+  "homepage": "https://github.com/biggora/device-uuid/",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/biggora/device-uuid.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/biggora/device-uuid/blob/master/LICENSE"
+    }
+  ],
+  "author": {
+    "name": "Alexey Gordeyev",
+    "email": "aleksej@gordejev.lv",
+    "url": "https://github.com/biggora"
+  },
+  "contributors": [],
+  "keywords": [
+    "useragent",
+    "browser",
+    "device",
+    "uuid"
+  ],
+  "main": "./index.js",
+  "scripts": {
+    "test": "nodeunit  test/browsers.js test/bots_test.js",
+    "express": "node test/express.js",
+    "http": "node test/http.js",
+    "build": "grunt build",
+    "lint": "make lint"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "engines": {
+    "node": ">=0.8"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "nodeunit": "*",
+    "jshint": "*",
+    "bower": "*",
+    "express": ">= 3.0.0",
+    "grunt": "*",
+    "grunt-contrib-clean": "*",
+    "grunt-contrib-uglify": "*",
+    "load-grunt-tasks": "^3.2.0"
+  }
+}

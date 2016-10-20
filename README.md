@@ -19,6 +19,11 @@ automatically create not browser depended uuid:
 ```javascript
     var uuid = new DeviceUUID().get();
 ```
+as a result example:
+```
+    e9dc90ac-d03d-4f01-a7bb-873e14556d8e
+```
+
 custom device uuid generation:
 ```javascript
 var du = new DeviceUUID().parse();

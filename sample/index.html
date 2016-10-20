@@ -8,6 +8,7 @@
 <body>
 <div id="fingerprint"></div>
 <div id="fingerprint-2"></div>
+<div id="fingerprint-3"></div>
 <script>
     var uuid = new DeviceUUID().get();
     //
@@ -38,8 +39,13 @@
         du.isTouchScreen
     ];
     console.log(dua)
+    // IE cpuClass
     var uuid2 = du.hashMD5(dua.join(':'));
+    var uuid3 = du.hashInt(dua.join(':'));
+    console.log(uuid2.slice(0,8), uuid2.slice(8,12), uuid2.slice(12,16), uuid2.slice(16,20), uuid2.slice(20))
     document.getElementById("fingerprint-2").innerHTML = uuid2;
+    document.getElementById("fingerprint-3").innerHTML = uuid3;
+    console.log(navigator, screen, window.performance)
 </script>
 </body>
 </html>

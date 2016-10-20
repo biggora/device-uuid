@@ -64,3 +64,7 @@ module provides details such as the following:
 }
 
 ```
+
+### LICENSE
+
+[MIT](LICENSE)

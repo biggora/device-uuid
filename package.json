@@ -25,7 +25,7 @@
     "device",
     "uuid"
   ],
-  "main": "./index.js",
+  "main": "./lib/device-uuid.js",
   "scripts": {
     "test": "nodeunit  test/browsers.js test/bots_test.js",
     "express": "node test/express.js",

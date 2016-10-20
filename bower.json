@@ -18,32 +18,7 @@
     "email": "aleksej@gordejev.lv",
     "url": "https://github.com/biggora"
   },
-  "contributors": [
-    {
-      "name": "Kacper Glowacki",
-      "url": "https://github.com/kacperus"
-    },
-    {
-      "name": "elisee",
-      "url": "https://github.com/elisee"
-    },
-    {
-      "name": "Bitdeli Chef",
-      "url": "https://github.com/bitdeli-chef"
-    },
-    {
-      "name": "Nicolas Tobo",
-      "url": "https://github.com/nicolastobo"
-    },
-    {
-      "name": "Samy Pess?",
-      "url": "https://github.com/SamyPesse"
-    },
-    {
-      "name": "Artem Nezvigin",
-      "url": "https://github.com/artnez"
-    }
-  ],
+  "contributors": [],
   "keywords": [
     "useragent",
     "user-agent",
@@ -55,9 +30,8 @@
     "**/.*",
     "node_modules",
     "test",
-    "Gruntfile.js",
+    "gulpfile.js",
     "index.js",
-    "bower_components",
     "tests"
   ],
   "authors": [

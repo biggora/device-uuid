@@ -1,7 +1,7 @@
 {
   "name": "device-uuid",
   "description": "Fast browser device uuid generation library.",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage": "https://github.com/biggora/device-uuid/",
   "repository": {
     "type": "git",
@@ -18,14 +18,19 @@
     "email": "aleksej@gordejev.lv",
     "url": "https://github.com/biggora"
   },
-  "contributors": [],
+  "contributors": [
+    {
+      "name": "Vitalii Onyshchenko",
+      "url": "https://github.com/uzer-ua"
+    }
+  ],
   "keywords": [
     "useragent",
     "browser",
     "device",
     "uuid"
   ],
-  "main": "./lib/device-uuid.js",
+  "main": "./index.js",
   "scripts": {
     "test": "nodeunit  test/browsers.js test/bots_test.js",
     "express": "node test/express.js",

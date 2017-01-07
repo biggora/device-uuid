@@ -6,7 +6,10 @@ Fast browser device uuid generation plugin. The plugin based on [express-userage
 ```bash
  $ bower install device-uuid --save
 ```
-
+or
+```bash
+ $ npm install device-uuid --save
+```
 
 ## Usage overview
 

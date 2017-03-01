@@ -1,7 +1,7 @@
 {
   "name": "device-uuid",
   "description": "Fast browser device uuid generation library.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "homepage": "https://github.com/biggora/device-uuid/",
   "repository": {
     "type": "git",

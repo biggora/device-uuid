@@ -13,20 +13,18 @@ var jshint = require('gulp-jshint');
 var gulpFilter = require('gulp-filter');
 
 gulp.task('clean-js', function() {
-    var filter = gulpFilter(['**/*.min.js','**/*.js.map']);
-    return gulp.src(pathToLib + '**', {read: false})
+  var filter = gulpFilter(['**/*.min.js','**/*.js.map']);
+  return gulp.src(pathToLib + '**', {read: false})
         .pipe(filter)
         .pipe(rimraf({force: true}));
 });
 
 gulp.task('uglify-js', gulp.series('clean-js', function() {
-    var filter = gulpFilter(['*/*.js', '!*.min.js']);
-    return gulp.src(pathToLib + '*')
+  var filter = gulpFilter(['*/*.js', '!*.min.js']);
+  return gulp.src(pathToLib + '*')
         .pipe(filter)
         //.pipe(sourcemaps.init({loadMaps: true}))
-        .pipe(uglify({
-            mangle: false
-        }))
+        .pipe(uglify({mangle: false}))
         .pipe(rename({suffix: '.min'}))
         .pipe(size())
         //.pipe(sourcemaps.write('./'))
@@ -35,8 +33,8 @@ gulp.task('uglify-js', gulp.series('clean-js', function() {
 );
 
 gulp.task('jshint', function() {
-    var filter = gulpFilter(['/*.js', '!*.min.js']);
-    return gulp.src(pathToLib)
+  var filter = gulpFilter(['/*.js', '!*.min.js']);
+  return gulp.src(pathToLib)
         .pipe(filter)
         .pipe(jshint())
         .pipe(size())

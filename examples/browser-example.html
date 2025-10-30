@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Device UUID Browser Example</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      color: #333;
+      border-bottom: 3px solid #0066cc;
+      padding-bottom: 10px;
+    }
+    h2 {
+      color: #0066cc;
+      margin-top: 30px;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+    .info-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      border-left: 4px solid #0066cc;
+    }
+    .info-label {
+      font-weight: bold;
+      color: #666;
+      font-size: 12px;
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+    .info-value {
+      color: #333;
+      font-size: 16px;
+      word-break: break-word;
+    }
+    .uuid-box {
+      background: #e8f4f8;
+      padding: 20px;
+      border-radius: 5px;
+      margin: 20px 0;
+      border: 2px solid #0066cc;
+    }
+    .uuid-value {
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: bold;
+      color: #0066cc;
+      word-break: break-all;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      margin: 2px;
+    }
+    .badge-true {
+      background: #d4edda;
+      color: #155724;
+    }
+    .badge-false {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    .flags-section {
+      margin: 20px 0;
+    }
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Device UUID Browser Example</h1>
+
+    <div class="uuid-box">
+      <div class="info-label">Device UUID</div>
+      <div class="uuid-value" id="device-uuid">Loading...</div>
+    </div>
+
+    <h2>Device Information</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-label">Browser</div>
+        <div class="info-value" id="browser">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Version</div>
+        <div class="info-value" id="version">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Operating System</div>
+        <div class="info-value" id="os">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Platform</div>
+        <div class="info-value" id="platform">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Language</div>
+        <div class="info-value" id="language">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Color Depth</div>
+        <div class="info-value" id="colorDepth">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Screen Resolution</div>
+        <div class="info-value" id="resolution">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">CPU Cores</div>
+        <div class="info-value" id="cpuCores">-</div>
+      </div>
+    </div>
+
+    <h2>Device Type Flags</h2>
+    <div class="flags-section" id="device-flags"></div>
+
+    <h2>Browser Flags</h2>
+    <div class="flags-section" id="browser-flags"></div>
+
+    <h2>Platform Flags</h2>
+    <div class="flags-section" id="platform-flags"></div>
+
+    <h2>Hash Functions</h2>
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="info-label">MD5 Hash (test string)</div>
+        <div class="info-value" id="md5-hash" style="font-family: monospace; font-size: 14px;">-</div>
+      </div>
+      <div class="info-item">
+        <div class="info-label">Integer Hash (test string)</div>
+        <div class="info-value" id="int-hash" style="font-family: monospace;">-</div>
+      </div>
+    </div>
+
+    <h2>Usage Example</h2>
+    <pre style="background: #f4f4f4; padding: 15px; border-radius: 5px; overflow-x: auto;"><code>&lt;!-- Include the library --&gt;
+&lt;script src="dist/index.browser.min.js"&gt;&lt;/script&gt;
+
+&lt;script&gt;
+  // Create instance
+  const device = new DeviceUUID.DeviceUUID();
+
+  // Generate UUID
+  const uuid = device.get();
+  console.log('Device UUID:', uuid);
+
+  // Parse user agent
+  const info = device.parse();
+  console.log('Device Info:', info);
+
+  // Access specific properties
+  console.log('Browser:', info.browser);
+  console.log('OS:', info.os);
+  console.log('Is Mobile:', info.isMobile);
+
+  // Use hash functions
+  const md5 = info.hashMD5('data');
+  const intHash = info.hashInt('data');
+&lt;/script&gt;</code></pre>
+  </div>
+
+  <!-- Load the Device UUID library -->
+  <script src="../dist/index.browser.min.js"></script>
+
+  <script>
+    // Initialize Device UUID
+    const device = new DeviceUUID.DeviceUUID();
+
+    // Generate UUID
+    const uuid = device.get();
+    document.getElementById('device-uuid').textContent = uuid;
+
+    // Parse device information
+    const info = device.parse();
+    console.log('Device Information:', info);
+
+    // Display basic information
+    document.getElementById('browser').textContent = info.browser;
+    document.getElementById('version').textContent = info.version;
+    document.getElementById('os').textContent = info.os;
+    document.getElementById('platform').textContent = info.platform;
+    document.getElementById('language').textContent = info.language;
+    document.getElementById('colorDepth').textContent = info.colorDepth + ' bits';
+    document.getElementById('resolution').textContent = info.resolution.join(' × ');
+    document.getElementById('cpuCores').textContent = info.cpuCores;
+
+    // Display hash functions
+    document.getElementById('md5-hash').textContent = info.hashMD5('test string');
+    document.getElementById('int-hash').textContent = info.hashInt('test string');
+
+    // Helper function to create badges
+    function createBadge(label, value) {
+      const badge = document.createElement('span');
+      badge.className = `badge ${value ? 'badge-true' : 'badge-false'}`;
+      badge.textContent = `${label}: ${value}`;
+      return badge;
+    }
+
+    // Device type flags
+    const deviceFlags = document.getElementById('device-flags');
+    deviceFlags.appendChild(createBadge('Desktop', info.isDesktop));
+    deviceFlags.appendChild(createBadge('Mobile', info.isMobile));
+    deviceFlags.appendChild(createBadge('Tablet', info.isTablet));
+    deviceFlags.appendChild(createBadge('Bot', info.isBot));
+    deviceFlags.appendChild(createBadge('Touch Screen', info.isTouchScreen));
+    deviceFlags.appendChild(createBadge('Smart TV', info.isSmartTV));
+
+    // Browser flags
+    const browserFlags = document.getElementById('browser-flags');
+    browserFlags.appendChild(createBadge('Chrome', info.isChrome));
+    browserFlags.appendChild(createBadge('Firefox', info.isFirefox));
+    browserFlags.appendChild(createBadge('Safari', info.isSafari));
+    browserFlags.appendChild(createBadge('Edge', info.isEdge));
+    browserFlags.appendChild(createBadge('Opera', info.isOpera));
+    browserFlags.appendChild(createBadge('IE', info.isIE));
+
+    // Platform flags
+    const platformFlags = document.getElementById('platform-flags');
+    platformFlags.appendChild(createBadge('Windows', info.isWindows));
+    platformFlags.appendChild(createBadge('Mac', info.isMac));
+    platformFlags.appendChild(createBadge('Linux', info.isLinux));
+    platformFlags.appendChild(createBadge('Android', info.isAndroid));
+    platformFlags.appendChild(createBadge('iPhone', info.isiPhone));
+    platformFlags.appendChild(createBadge('iPad', info.isiPad));
+    platformFlags.appendChild(createBadge('Chrome OS', info.isChromeOS));
+  </script>
+</body>
+</html>

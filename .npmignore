@@ -1,3 +1,25 @@
+# Source files (only ship dist/)
+src/
+tests/
+examples/
+
+# Config files
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+eslint.config.mjs
+.prettierrc.json
+.prettierignore
+
+# Development files
 .idea/
+.vscode/
 node_modules/
-Gruntfile.js
+*.log
+
+# Test and coverage
+coverage/
+.nyc_output/
+
+# CI/CD
+.github/

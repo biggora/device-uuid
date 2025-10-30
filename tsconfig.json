@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    // Target modern environments (Node.js 14+, modern browsers)
+    "target": "ES2020",
+    "module": "ESNext",
+    "lib": ["ES2020", "DOM"],
+
+    // Types for global APIs
+    "types": ["vitest/globals", "vitest/jsdom", "node"],
+
+    // Module resolution
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+
+    // Source maps for debugging
+    "sourceMap": true,
+    "declarationMap": true,
+
+    // Generate declaration files for library consumers
+    "declaration": true,
+    "declarationDir": "./dist/types",
+
+    // Output configuration
+    "outDir": "./dist",
+
+    // Strict type checking for quality
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // Additional checks
+    "skipLibCheck": true,
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+
+    // Import helpers from tslib to reduce bundle size
+    "importHelpers": false,
+
+    // Emit
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "newLine": "lf"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "lib", "**/*.spec.ts", "**/*.test.ts"]
+}

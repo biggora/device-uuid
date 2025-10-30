@@ -1,18 +1,13 @@
 {
   "name": "device-uuid",
   "description": "Fast browser device uuid generation library.",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "homepage": "https://github.com/biggora/device-uuid/",
   "repository": {
     "type": "git",
     "url": "git://github.com/biggora/device-uuid.git"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/biggora/device-uuid/blob/master/LICENSE"
-    }
-  ],
+  "license": "MIT",
   "author": {
     "name": "Alexey Gordeyev",
     "email": "aleksej@gordejev.lv",
@@ -28,36 +23,58 @@
     "useragent",
     "browser",
     "device",
-    "uuid"
+    "uuid",
+    "fingerprint",
+    "typescript"
   ],
-  "main": "./index.js",
-  "scripts": {
-    "test": "nodeunit  test/browsers.js test/bots_test.js",
-    "express": "node test/express.js",
-    "http": "node test/http.js",
-    "build": "grunt build",
-    "lint": "make lint"
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "browser": "./dist/index.browser.min.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "browser": "./dist/index.browser.min.js",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
   },
-  "directories": {
-    "lib": "lib",
-    "test": "test"
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "build:watch": "tsup --watch",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src --ext .ts",
+    "lint:fix": "eslint src --ext .ts --fix",
+    "format": "prettier --write \"**/*.(ts|tsx|json|md)\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "test:watch": "vitest",
+    "test": "vitest run",
+    "test:vitest": "vitest run",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run clean && npm run build"
   },
   "engines": {
-    "node": ">=0.8"
+    "node": ">=18.0.0"
   },
-  "dependencies": {},
   "devDependencies": {
-    "express": ">= 3.0.0",
-    "gulp": "^4.0.0",
-    "gulp-concat": "^2.6.0",
-    "gulp-filesize": "0.0.6",
-    "gulp-filter": "^5.1.0",
-    "gulp-jshint": "^2.1.0",
-    "gulp-rename": "^1.4.0",
-    "gulp-rimraf": "^0.2.2",
-    "gulp-sourcemaps": "^2.6.4",
-    "gulp-uglify": "^3.0.1",
-    "jshint": "^2.9.7",
-    "nodeunit": "*"
+    "@types/node": "^24.9.2",
+    "@typescript-eslint/eslint-plugin": "^8.46.2",
+    "@typescript-eslint/parser": "^8.46.2",
+    "@vitest/coverage-v8": "^4.0.5",
+    "eslint": "^9.38.0",
+    "jsdom": "^27.0.1",
+    "prettier": "^3.6.2",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.46.2",
+    "vitest": "^4.0.5"
   }
 }

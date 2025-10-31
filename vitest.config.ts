@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     // Test environment
-    environment: 'jsdom', // For DOM APIs (window, navigator, screen)
+    environment: 'happy-dom', // For DOM APIs (window, navigator, screen) - lighter and more compatible than jsdom
 
     // Global test settings
     globals: true, // Enable global test APIs (describe, it, expect)

@@ -6,7 +6,7 @@
     "lib": ["ES2020", "DOM"],
 
     // Types for global APIs
-    "types": ["vitest/globals", "vitest/jsdom", "node"],
+    "types": ["vitest/globals", "node"],
 
     // Module resolution
     "moduleResolution": "bundler",

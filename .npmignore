@@ -23,3 +23,5 @@ coverage/
 
 # CI/CD
 .github/
+AGENTS.md
+QWEN.md

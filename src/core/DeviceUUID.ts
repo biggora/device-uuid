@@ -3,7 +3,14 @@
  * Analyzes user agent and device characteristics to generate unique identifiers
  */
 
-import type { DeviceUUIDOptions, AgentInfo } from '../types';
+import type {
+  DeviceUUIDOptions,
+  AgentInfo,
+  FingerprintOptions,
+  FingerprintDetails,
+  FingerprintFeature,
+  FingerprintPreset,
+} from '../types';
 import {
   DEFAULT_OPTIONS,
   DEFAULT_AGENT,
@@ -22,7 +29,25 @@ import {
   getScreenResolution,
   getCPUCores,
   isTouchScreen as checkTouchScreen,
+  getNavigator,
+  isBrowser,
 } from '../utils/environment';
+import {
+  mergeOptions,
+  getPresetOptions,
+  isFeatureSupported,
+  withTimeout,
+  combineHashes,
+  calculateConfidence,
+  getTimestamp,
+  measureAsync,
+} from '../utils/fingerprint';
+import {
+  getCanvasFingerprint,
+  getWebGLFingerprint,
+  getAudioFingerprint,
+  getFontFingerprint,
+} from '../fingerprints';
 
 /**
  * DeviceUUID Class
@@ -35,6 +60,16 @@ export class DeviceUUID {
   private readonly osPatterns = OS_PATTERNS;
   private readonly platformPatterns = PLATFORM_PATTERNS;
   private agent: AgentInfo;
+
+  /**
+   * Get or set the user agent string
+   */
+  public get userAgent(): string {
+    return this.agent.source;
+  }
+  public set userAgent(value: string) {
+    this.agent.source = value;
+  }
 
   /**
    * Create a new DeviceUUID instance
@@ -729,5 +764,412 @@ export class DeviceUUID {
     ];
 
     return uuid.join('-');
+  }
+
+  /**
+   * Generate a UUID asynchronously with advanced fingerprinting methods
+   * @param options - Fingerprint options or preset name
+   * @returns Promise resolving to UUID string
+   */
+  public async getAsync(
+    options?: Partial<FingerprintOptions> | FingerprintPreset
+  ): Promise<string> {
+    const details = await this.getDetailedAsync(options);
+    return details.uuid;
+  }
+
+  /**
+   * Generate detailed fingerprint with all component information
+   * @param options - Fingerprint options or preset name
+   * @returns Promise resolving to detailed fingerprint result
+   */
+  public async getDetailedAsync(
+    options?: Partial<FingerprintOptions> | FingerprintPreset
+  ): Promise<FingerprintDetails> {
+    const startTime = getTimestamp();
+
+    // Resolve options
+    const resolvedOptions =
+      typeof options === 'string' ? getPresetOptions(options) : mergeOptions(options);
+
+    const components: FingerprintDetails['components'] = {
+      basic: { name: 'basic', value: null, success: false },
+    };
+
+    // Get basic fingerprint (always included)
+    const basicHash = this.get();
+    components.basic = {
+      name: 'basic',
+      value: basicHash,
+      success: true,
+    };
+
+    const hashes: (string | null)[] = [basicHash];
+    let successCount = 1;
+    let totalCount = 1;
+
+    // Collect advanced fingerprints based on options
+    const tasks: Promise<void>[] = [];
+
+    // Canvas fingerprint
+    if (resolvedOptions.canvas) {
+      totalCount++;
+      tasks.push(
+        (async () => {
+          const { result, duration } = await measureAsync(() =>
+            getCanvasFingerprint({ timeout: resolvedOptions.methodTimeout })
+          );
+          components.canvas = {
+            name: 'canvas',
+            value: result,
+            success: result !== null,
+            duration,
+          };
+          if (result) {
+            hashes.push(result);
+            successCount++;
+          }
+        })()
+      );
+    }
+
+    // WebGL fingerprint
+    if (resolvedOptions.webgl) {
+      totalCount++;
+      tasks.push(
+        (async () => {
+          const { result, duration } = await measureAsync(() =>
+            getWebGLFingerprint({ timeout: resolvedOptions.methodTimeout })
+          );
+          components.webgl = {
+            name: 'webgl',
+            value: result,
+            success: result !== null,
+            duration,
+          };
+          if (result) {
+            hashes.push(result);
+            successCount++;
+          }
+        })()
+      );
+    }
+
+    // Audio fingerprint
+    if (resolvedOptions.audio) {
+      totalCount++;
+      tasks.push(
+        (async () => {
+          const { result, duration } = await measureAsync(() =>
+            getAudioFingerprint({ timeout: resolvedOptions.methodTimeout })
+          );
+          components.audio = {
+            name: 'audio',
+            value: result,
+            success: result !== null,
+            duration,
+          };
+          if (result) {
+            hashes.push(result);
+            successCount++;
+          }
+        })()
+      );
+    }
+
+    // Font fingerprint
+    if (resolvedOptions.fonts) {
+      totalCount++;
+      const fontList = Array.isArray(resolvedOptions.fonts) ? resolvedOptions.fonts : undefined;
+      tasks.push(
+        (async () => {
+          const { result, duration } = await measureAsync(() =>
+            getFontFingerprint({ timeout: resolvedOptions.methodTimeout, fonts: fontList })
+          );
+          components.fonts = {
+            name: 'fonts',
+            value: result,
+            success: result !== null,
+            duration,
+          };
+          if (result) {
+            hashes.push(result);
+            successCount++;
+          }
+        })()
+      );
+    }
+
+    // Media devices fingerprint
+    if (resolvedOptions.mediaDevices) {
+      totalCount++;
+      tasks.push(
+        (async () => {
+          const { result, duration } = await measureAsync(() => this.getMediaDevicesHash());
+          components.mediaDevices = {
+            name: 'mediaDevices',
+            value: result,
+            success: result !== null,
+            duration,
+          };
+          if (result) {
+            hashes.push(result);
+            successCount++;
+          }
+        })()
+      );
+    }
+
+    // Network info fingerprint
+    if (resolvedOptions.networkInfo) {
+      totalCount++;
+      const { result, duration } = await measureAsync(() =>
+        Promise.resolve(this.getNetworkInfoHash())
+      );
+      components.networkInfo = {
+        name: 'networkInfo',
+        value: result,
+        success: result !== null,
+        duration,
+      };
+      if (result) {
+        hashes.push(result);
+        successCount++;
+      }
+    }
+
+    // Timezone fingerprint
+    if (resolvedOptions.timezone) {
+      totalCount++;
+      const { result, duration } = await measureAsync(() =>
+        Promise.resolve(this.getTimezoneHash())
+      );
+      components.timezone = {
+        name: 'timezone',
+        value: result,
+        success: result !== null,
+        duration,
+      };
+      if (result) {
+        hashes.push(result);
+        successCount++;
+      }
+    }
+
+    // Incognito detection
+    if (resolvedOptions.incognitoDetection) {
+      totalCount++;
+      tasks.push(
+        (async () => {
+          const { result, duration } = await measureAsync(() => this.detectIncognito());
+          components.incognito = {
+            name: 'incognito',
+            value: result,
+            success: result !== null,
+            duration,
+          };
+          if (result) {
+            hashes.push(result);
+            successCount++;
+          }
+        })()
+      );
+    }
+
+    // Wait for all async tasks with global timeout
+    await withTimeout(Promise.all(tasks), resolvedOptions.timeout ?? 5000, []);
+
+    // Combine all hashes into final UUID
+    const combinedData = combineHashes(hashes);
+    const finalHash = hashMD5(combinedData);
+
+    const uuid = [
+      finalHash.slice(0, 8),
+      finalHash.slice(8, 12),
+      '4' + finalHash.slice(12, 15),
+      'b' + finalHash.slice(15, 18),
+      finalHash.slice(20),
+    ].join('-');
+
+    const endTime = getTimestamp();
+
+    return {
+      uuid,
+      components,
+      confidence: calculateConfidence(totalCount, successCount),
+      duration: endTime - startTime,
+      timestamp: Date.now(),
+    };
+  }
+
+  /**
+   * Get individual fingerprint components (synchronous basic components only)
+   * @returns Object with component hashes
+   */
+  public getComponents(): Record<string, string | null> {
+    const du = this.parse();
+    return {
+      userAgent: hashMD5(du.source),
+      platform: hashMD5(du.platform),
+      os: hashMD5(du.os),
+      browser: hashMD5(`${du.browser}:${du.version}`),
+      screen: hashMD5(`${du.resolution[0]}x${du.resolution[1]}:${du.colorDepth}:${du.pixelDepth}`),
+      hardware: hashMD5(`${du.cpuCores}:${du.isTouchScreen}`),
+      language: hashMD5(du.language),
+    };
+  }
+
+  /**
+   * Check if a fingerprinting feature is supported
+   * @param feature - Feature to check
+   * @returns Whether the feature is supported
+   */
+  public static isFeatureSupported(feature: FingerprintFeature): boolean {
+    return isFeatureSupported(feature);
+  }
+
+  /**
+   * Get media devices fingerprint hash
+   * @returns Promise resolving to hash or null
+   */
+  private async getMediaDevicesHash(): Promise<string | null> {
+    if (!isBrowser()) return null;
+
+    const nav = getNavigator();
+    if (!nav?.mediaDevices?.enumerateDevices) return null;
+
+    try {
+      const devices = await nav.mediaDevices.enumerateDevices();
+
+      const counts = {
+        audioinput: 0,
+        audiooutput: 0,
+        videoinput: 0,
+      };
+
+      for (const device of devices) {
+        if (device.kind in counts) {
+          counts[device.kind as keyof typeof counts]++;
+        }
+      }
+
+      return hashMD5(`${counts.audioinput}:${counts.audiooutput}:${counts.videoinput}`);
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Get network information fingerprint hash
+   * @returns Hash or null
+   */
+  private getNetworkInfoHash(): string | null {
+    if (!isBrowser()) return null;
+
+    const nav = getNavigator() as Navigator & {
+      connection?: {
+        effectiveType?: string;
+        downlink?: number;
+        rtt?: number;
+      };
+    };
+
+    if (!nav?.connection) return null;
+
+    try {
+      const conn = nav.connection;
+      const parts = [
+        conn.effectiveType ?? 'unknown',
+        conn.downlink?.toString() ?? 'unknown',
+        conn.rtt?.toString() ?? 'unknown',
+      ];
+      return hashMD5(parts.join(':'));
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Get timezone fingerprint hash
+   * @returns Hash or null
+   */
+  private getTimezoneHash(): string | null {
+    try {
+      const parts: string[] = [];
+
+      // Timezone offset
+      parts.push(`offset:${new Date().getTimezoneOffset()}`);
+
+      // Intl timezone
+      if (typeof Intl !== 'undefined') {
+        const options = Intl.DateTimeFormat().resolvedOptions();
+        parts.push(`tz:${options.timeZone ?? 'unknown'}`);
+        parts.push(`locale:${options.locale ?? 'unknown'}`);
+      }
+
+      // Languages
+      const nav = getNavigator();
+      if (nav?.languages) {
+        parts.push(`langs:${nav.languages.join(',')}`);
+      }
+
+      return hashMD5(parts.join('|'));
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Detect incognito/private browsing mode
+   * @returns Promise resolving to hash or null
+   */
+  private async detectIncognito(): Promise<string | null> {
+    if (!isBrowser()) return null;
+
+    try {
+      const indicators: string[] = [];
+
+      // Storage quota check
+      if (navigator.storage?.estimate) {
+        const estimate = await navigator.storage.estimate();
+        const quota = estimate.quota ?? 0;
+        // Private mode typically has significantly lower quota
+        indicators.push(`quota:${quota < 120000000 ? 'low' : 'normal'}`);
+      }
+
+      // IndexedDB check
+      try {
+        const db = indexedDB.open('test');
+        db.onerror = () => indicators.push('idb:blocked');
+        await new Promise<void>((resolve) => {
+          db.onsuccess = () => {
+            indicators.push('idb:available');
+            resolve();
+          };
+          db.onerror = () => {
+            indicators.push('idb:blocked');
+            resolve();
+          };
+          setTimeout(resolve, 100);
+        });
+      } catch {
+        indicators.push('idb:error');
+      }
+
+      // FileSystem API availability check
+      // Some browsers disable File System Access API in private mode
+      if ('showOpenFilePicker' in window) {
+        indicators.push('fsapi:available');
+      } else {
+        indicators.push('fsapi:unavailable');
+      }
+
+      // Cookie check
+      indicators.push(`cookies:${navigator.cookieEnabled ? 'enabled' : 'disabled'}`);
+
+      return hashMD5(indicators.join('|'));
+    } catch {
+      return null;
+    }
   }
 }

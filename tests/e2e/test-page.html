@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DeviceUUID Test Page</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.5;
+    }
+    .section {
+      margin-bottom: 30px;
+      padding: 20px;
+      background: #f5f5f5;
+      border-radius: 8px;
+    }
+    h1, h2 { margin-top: 0; }
+    .result {
+      background: white;
+      padding: 15px;
+      border-radius: 4px;
+      font-family: monospace;
+      white-space: pre-wrap;
+      word-break: break-all;
+      margin-top: 10px;
+    }
+    .success { color: green; }
+    .error { color: red; }
+    .info { color: blue; }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      border: none;
+      border-radius: 4px;
+      background: #007acc;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    button:hover { background: #005a9e; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+    }
+    .card h3 { margin-top: 0; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h1>DeviceUUID Library Test Page</h1>
+  <p>This page is used for automated cross-browser testing of the device-uuid library.</p>
+
+  <div class="section">
+    <h2>Library Status</h2>
+    <div id="library-status"></div>
+  </div>
+
+  <div class="section">
+    <h2>Synchronous API (Basic)</h2>
+    <button id="btn-sync">Generate Sync UUID</button>
+    <div id="sync-result" class="result"></div>
+  </div>
+
+  <div class="section">
+    <h2>Asynchronous API (Enhanced)</h2>
+    <div class="grid">
+      <div class="card">
+        <h3>Canvas</h3>
+        <button id="btn-canvas">Test Canvas</button>
+        <div id="canvas-result" class="result"></div>
+      </div>
+      <div class="card">
+        <h3>WebGL</h3>
+        <button id="btn-webgl">Test WebGL</button>
+        <div id="webgl-result" class="result"></div>
+      </div>
+      <div class="card">
+        <h3>Audio</h3>
+        <button id="btn-audio">Test Audio</button>
+        <div id="audio-result" class="result"></div>
+      </div>
+      <div class="card">
+        <h3>Fonts</h3>
+        <button id="btn-fonts">Test Fonts</button>
+        <div id="fonts-result" class="result"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Full Async Fingerprint</h2>
+    <button id="btn-full">Generate Full UUID</button>
+    <button id="btn-detailed">Get Detailed Info</button>
+    <div id="full-result" class="result"></div>
+  </div>
+
+  <div class="section">
+    <h2>Feature Detection</h2>
+    <button id="btn-features">Check Features</button>
+    <div id="features-result" class="result"></div>
+  </div>
+
+  <script src="/dist/index.browser.min.js"></script>
+  <script>
+    // Access the DeviceUUID class directly (no .default needed)
+    const DeviceUUIDClass = window.DeviceUUID;
+    const isFeatureSupported = window.DeviceUUID.isFeatureSupported;
+
+    // UI Helpers
+    const $ = (id) => document.getElementById(id);
+    const setResult = (id, content, className = '') => {
+      const el = $(id);
+      if (el) {
+        el.textContent = content;
+        el.className = 'result ' + className;
+      }
+    };
+
+    // Library Status
+    const statusEl = $('library-status');
+    if (typeof DeviceUUIDClass === 'function') {
+      const statusText = document.createTextNode('DeviceUUID library loaded successfully');
+      const span = document.createElement('span');
+      span.className = 'success';
+      span.textContent = '✓ ';
+      span.appendChild(statusText);
+      statusEl.appendChild(span);
+    } else {
+      const statusText = document.createTextNode('DeviceUUID library not found');
+      const span = document.createElement('span');
+      span.className = 'error';
+      span.textContent = '✗ ';
+      span.appendChild(statusText);
+      statusEl.appendChild(span);
+    }
+
+    // Sync UUID
+    $('btn-sync').addEventListener('click', () => {
+      try {
+        const du = new DeviceUUIDClass();
+        const uuid = du.get();
+        setResult('sync-result', uuid, 'success');
+      } catch (err) {
+        setResult('sync-result', 'Error: ' + err.message, 'error');
+      }
+    });
+
+    // Canvas Fingerprint
+    $('btn-canvas').addEventListener('click', async () => {
+      try {
+        const du = new DeviceUUIDClass();
+        setResult('canvas-result', 'Generating...', 'info');
+        const result = await du.getAsync({ canvas: true });
+        setResult('canvas-result', result, 'success');
+      } catch (err) {
+        setResult('canvas-result', 'Error: ' + err.message, 'error');
+      }
+    });
+
+    // WebGL Fingerprint
+    $('btn-webgl').addEventListener('click', async () => {
+      try {
+        const du = new DeviceUUIDClass();
+        setResult('webgl-result', 'Generating...', 'info');
+        const result = await du.getAsync({ webgl: true });
+        setResult('webgl-result', result, 'success');
+      } catch (err) {
+        setResult('webgl-result', 'Error: ' + err.message, 'error');
+      }
+    });
+
+    // Audio Fingerprint
+    $('btn-audio').addEventListener('click', async () => {
+      try {
+        const du = new DeviceUUIDClass();
+        setResult('audio-result', 'Generating...', 'info');
+        const result = await du.getAsync({ audio: true });
+        setResult('audio-result', result, 'success');
+      } catch (err) {
+        setResult('audio-result', 'Error: ' + err.message, 'error');
+      }
+    });
+
+    // Font Fingerprint
+    $('btn-fonts').addEventListener('click', async () => {
+      try {
+        const du = new DeviceUUIDClass();
+        setResult('fonts-result', 'Generating...', 'info');
+        const result = await du.getAsync({ fonts: true });
+        setResult('fonts-result', result, 'success');
+      } catch (err) {
+        setResult('fonts-result', 'Error: ' + err.message, 'error');
+      }
+    });
+
+    // Full Async
+    $('btn-full').addEventListener('click', async () => {
+      try {
+        const du = new DeviceUUIDClass();
+        setResult('full-result', 'Generating full fingerprint...', 'info');
+        const result = await du.getAsync({
+          canvas: true,
+          webgl: true,
+          audio: true,
+          fonts: true,
+          mediaDevices: true,
+          networkInfo: true
+        });
+        setResult('full-result', result, 'success');
+      } catch (err) {
+        setResult('full-result', 'Error: ' + err.message, 'error');
+      }
+    });
+
+    // Detailed Result
+    $('btn-detailed').addEventListener('click', async () => {
+      try {
+        const du = new DeviceUUIDClass();
+        setResult('full-result', 'Generating detailed fingerprint...', 'info');
+        const result = await du.getDetailedAsync({
+          canvas: true,
+          webgl: true,
+          audio: true,
+          fonts: true
+        });
+        setResult('full-result', JSON.stringify(result, null, 2), 'success');
+      } catch (err) {
+        setResult('full-result', 'Error: ' + err.message, 'error');
+      }
+    });
+
+    // Feature Detection
+    $('btn-features').addEventListener('click', () => {
+      try {
+        const features = {
+          canvas: isFeatureSupported('canvas'),
+          webgl: isFeatureSupported('webgl'),
+          webgl2: isFeatureSupported('webgl2'),
+          audio: isFeatureSupported('audio'),
+          offlineAudio: isFeatureSupported('offlineAudio'),
+          fonts: isFeatureSupported('fonts'),
+          mediaDevices: isFeatureSupported('mediaDevices'),
+          networkInfo: isFeatureSupported('networkInfo'),
+          deviceMemory: isFeatureSupported('deviceMemory'),
+          storageEstimate: isFeatureSupported('storageEstimate')
+        };
+        setResult('features-result', JSON.stringify(features, null, 2), 'success');
+      } catch (err) {
+        setResult('features-result', 'Error: ' + err.message, 'error');
+      }
+    });
+
+    // Expose for Playwright tests
+    window.testDeviceUUID = {
+      DeviceUUID: DeviceUUIDClass,
+      isFeatureSupported: isFeatureSupported
+    };
+  </script>
+</body>
+</html>

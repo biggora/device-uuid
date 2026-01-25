@@ -10,7 +10,15 @@
 export { DeviceUUID } from './core/DeviceUUID';
 
 // Export types for TypeScript consumers
-export type { DeviceUUIDOptions, AgentInfo } from './types';
+export type {
+  DeviceUUIDOptions,
+  AgentInfo,
+  FingerprintOptions,
+  FingerprintDetails,
+  FingerprintComponent,
+  FingerprintFeature,
+  FingerprintPreset,
+} from './types';
 
 // Export constants for advanced users
 export {
@@ -24,6 +32,37 @@ export {
 
 // Export hash utilities
 export { hashMD5, hashInt } from './utils/md5';
+
+// Export fingerprint utilities
+export {
+  DEFAULT_FINGERPRINT_OPTIONS,
+  FINGERPRINT_PRESETS,
+  mergeOptions,
+  getPresetOptions,
+  isFeatureSupported,
+  ErrorLoggerConfig,
+  ErrorLogEntry,
+  getErrorLogger,
+  logError,
+} from './utils/fingerprint';
+
+// Export individual fingerprint methods for advanced use
+export {
+  getCanvasFingerprint,
+  isCanvasSupported,
+  getWebGLFingerprint,
+  isWebGLSupported,
+  getAudioFingerprint,
+  isAudioSupported,
+  getFontFingerprint,
+  getFontFingerprintAsync,
+  getDetectedFonts,
+  getDetectedFontsAsync,
+  getDefaultFontList,
+  isFontDetectionSupported,
+  isOfflineAudioSupported,
+  isDebugInfoSupported,
+} from './fingerprints';
 
 // Default export for convenience
 export { DeviceUUID as default } from './core/DeviceUUID';

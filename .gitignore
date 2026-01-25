@@ -45,3 +45,5 @@ lerna-debug.log*
 .cache/
 AGENTS.md
 QWEN.md
+/playwright-report/
+/test-results/

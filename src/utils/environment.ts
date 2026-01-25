@@ -4,13 +4,14 @@
  */
 
 /**
- * Extended Navigator interface for legacy browser properties
+ * Extended Navigator interface for legacy and experimental browser properties
  */
 interface ExtendedNavigator extends Navigator {
   userLanguage?: string;
   browserLanguage?: string;
   systemLanguage?: string;
   msMaxTouchPoints?: number;
+  deviceMemory?: number;
 }
 
 /**
@@ -134,4 +135,63 @@ export const isTouchScreen = (): boolean => {
     (nav.maxTouchPoints !== undefined && nav.maxTouchPoints > 0) ||
     (nav.msMaxTouchPoints !== undefined && nav.msMaxTouchPoints > 0)
   );
+};
+
+/**
+ * Get device memory in GB safely
+ * Returns approximate RAM: 0.25, 0.5, 1, 2, 4, or 8
+ * Returns -1 if not supported (Safari, Firefox)
+ */
+export const getDeviceMemory = (): number => {
+  const nav = getNavigator() as ExtendedNavigator | undefined;
+  return nav?.deviceMemory ?? -1;
+};
+
+/**
+ * Get max touch points safely
+ * Returns number of simultaneous touch points supported
+ * Returns 0 if not a touch device
+ */
+export const getMaxTouchPoints = (): number => {
+  const nav = getNavigator() as ExtendedNavigator | undefined;
+  if (!nav) return 0;
+
+  return nav.maxTouchPoints ?? nav.msMaxTouchPoints ?? 0;
+};
+
+/**
+ * Get Do Not Track preference safely
+ * Returns '1' if enabled, '0' if disabled, null if not set
+ */
+export const getDoNotTrack = (): string | null => {
+  const nav = getNavigator();
+  const win = getWindow() as (Window & { doNotTrack?: string }) | undefined;
+
+  if (!nav) return null;
+
+  // Check navigator.doNotTrack (standard)
+  if (nav.doNotTrack !== undefined && nav.doNotTrack !== null) {
+    return nav.doNotTrack;
+  }
+
+  // Check window.doNotTrack (legacy IE)
+  if (win?.doNotTrack !== undefined) {
+    return win.doNotTrack;
+  }
+
+  return null;
+};
+
+/**
+ * Check if PDF viewer is enabled in the browser
+ * Returns true if enabled, false if disabled, null if not supported
+ */
+export const getPdfViewerEnabled = (): boolean | null => {
+  const nav = getNavigator();
+
+  if (!nav) return null;
+
+  // pdfViewerEnabled is a standard API
+  // Return directly as it's always present in modern Navigator
+  return nav.pdfViewerEnabled;
 };

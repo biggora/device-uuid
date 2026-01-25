@@ -1,7 +1,7 @@
 {
   "name": "device-uuid",
   "description": "Fast browser device uuid generation library.",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "homepage": "https://github.com/biggora/device-uuid/",
   "repository": {
     "type": "git",
@@ -52,11 +52,16 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix",
-    "format": "prettier --write \"**/*.(ts|tsx|json|md)\"",
+    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,mjs,json,md,yml}\"",
     "format:check": "prettier --check \"src/**/*.ts\"",
     "test:watch": "vitest",
     "test": "vitest run",
     "test:vitest": "vitest run",
+    "test:unit": "vitest run",
+    "test:e2e": "playwright test --reporter null",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug",
+    "test:all": "npm run test:unit && npm run test:e2e",
     "clean": "rimraf dist",
     "prepublishOnly": "npm run clean && npm run build"
   },
@@ -64,17 +69,23 @@
     "node": ">=18.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.0",
     "@types/node": "^24.9.2",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "@vitest/coverage-v8": "^4.0.5",
     "eslint": "^9.38.0",
     "happy-dom": "^20.0.10",
+    "http-server": "^14.1.1",
     "prettier": "^3.6.2",
     "rimraf": "^6.0.1",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",
     "vitest": "^4.0.5"
+  },
+  "dependencies": {
+    "install": "^0.13.0",
+    "playwright": "^1.58.0"
   }
 }

@@ -1,15 +1,18 @@
 # device-uuid
 
-Fast browser device UUID generation library with comprehensive device detection. Written in TypeScript with zero dependencies, supporting both Node.js and browser environments.
+Fast browser device UUID generation library with comprehensive device detection and advanced fingerprinting capabilities. Written in TypeScript with zero runtime dependencies, supporting both Node.js and browser environments.
 
 ## Features
 
-- 🚀 Zero dependencies
+- 🚀 Zero runtime dependencies
 - 📦 Multiple module formats (ESM, CJS, IIFE)
 - 🔍 Comprehensive device detection (OS, browser, platform)
 - 📱 Mobile, tablet, and desktop detection
-- 🤖 Bot detection
-- 📺 Smart TV detection
+- 🤖 Bot detection (32+ known bot patterns)
+- 📺 Smart TV and gaming console detection
+- 🎨 Advanced fingerprinting (Canvas, WebGL, Audio, Fonts)
+- ⚡ Dual API: Synchronous and Asynchronous
+- 🔒 Privacy-by-design (fingerprinting is opt-in)
 - 🎨 TypeScript support with full type definitions
 - 🌐 Browser and Node.js compatible
 
@@ -19,18 +22,14 @@ Fast browser device UUID generation library with comprehensive device detection.
 npm install device-uuid
 ```
 
-## Usage
+## Quick Start
 
 ### Node.js / Module Bundlers
 
 ```typescript
-// ES Modules
 import { DeviceUUID } from 'device-uuid';
 
-// CommonJS
-const { DeviceUUID } = require('device-uuid');
-
-// Generate UUID
+// Basic synchronous UUID (user agent + screen properties)
 const device = new DeviceUUID();
 const uuid = device.get();
 console.log(uuid); // e9dc90ac-d03d-4f01-a7bb-873e14556d8e
@@ -42,220 +41,377 @@ console.log(info.os); // Windows 11
 console.log(info.isMobile); // false
 ```
 
-### Browser (via CDN or direct include)
+### Browser (via `<script>` tag)
 
 ```html
-<!-- Minified version (recommended for production) -->
 <script src="node_modules/device-uuid/dist/index.browser.min.js"></script>
-
-<!-- Or unminified for development -->
-<script src="node_modules/device-uuid/dist/index.browser.js"></script>
-
 <script>
-  // Create instance
   const device = new DeviceUUID.DeviceUUID();
-
-  // Generate UUID
   const uuid = device.get();
   console.log('Device UUID:', uuid);
-
-  // Parse user agent
-  const info = device.parse();
-  console.log('Browser:', info.browser);
-  console.log('OS:', info.os);
-  console.log('Is Mobile:', info.isMobile);
 </script>
 ```
 
-### Advanced Usage
+## API Reference
 
-#### Custom UUID Generation
+### Synchronous API
 
-```javascript
+Basic device identification using user agent and screen properties.
+
+#### `get(customData?: string): string`
+
+Generate a UUID based on device characteristics.
+
+```typescript
+const device = new DeviceUUID();
+const uuid = device.get();
+```
+
+#### `parse(source?: string): AgentInfo`
+
+Parse user agent string and return device information.
+
+```typescript
+const info = device.parse();
+console.log(info.browser); // 'Chrome'
+console.log(info.os); // 'Windows 11'
+console.log(info.isMobile); // false
+```
+
+#### `getComponents(): Record<string, string | null>`
+
+Get individual fingerprint components.
+
+```typescript
+const components = device.getComponents();
+console.log(components);
+// { userAgent: '...', screen: '1920x1080', language: 'en-US', ... }
+```
+
+### Asynchronous API
+
+Advanced fingerprinting with browser characteristics. **All methods are opt-in for privacy.**
+
+#### `getAsync(options?: FingerprintOptions): Promise<string>`
+
+Generate a UUID with advanced fingerprinting methods.
+
+```typescript
+// Enable specific fingerprinting methods
+const uuid = await device.getAsync({
+  canvas: true,
+  webgl: true,
+  audio: true,
+  fonts: true,
+  timeout: 5000
+});
+
+// Or use a preset
+const uuid = await device.getAsync({ preset: 'standard' });
+```
+
+#### `getDetailedAsync(options?: FingerprintOptions): Promise<FingerprintDetails>`
+
+Generate UUID and return detailed fingerprint information.
+
+```typescript
+const details = await device.getDetailedAsync({ preset: 'standard' });
+
+console.log(details.uuid);       // Generated UUID
+console.log.details.components); // Individual components
+console.log(details.options);    // Options used
+console.log.details.duration);   // Time taken (ms)
+```
+
+### Static Methods
+
+#### `DeviceUUID.isFeatureSupported(feature: FingerprintFeature): boolean`
+
+Check if a fingerprinting feature is supported in the current environment.
+
+```typescript
+import { DeviceUUID } from 'device-uuid';
+
+DeviceUUID.isFeatureSupported('canvas');  // true/false
+DeviceUUID.isFeatureSupported('webgl');   // true/false
+DeviceUUID.isFeatureSupported('audio');   // true/false
+```
+
+## Configuration Options
+
+### Fingerprint Presets
+
+Presets provide pre-configured options for common use cases:
+
+```typescript
+// Minimal - basic device info only (no advanced fingerprinting)
+await device.getAsync({ preset: 'minimal' });
+
+// Standard - canvas and WebGL (good uniqueness)
+await device.getAsync({ preset: 'standard' });
+
+// Comprehensive - all fingerprinting methods
+await device.getAsync({ preset: 'comprehensive' });
+```
+
+### Custom Options
+
+Fine-grained control over fingerprinting methods:
+
+```typescript
+interface FingerprintOptions {
+  // Fingerprinting methods (all opt-in, default: false)
+  canvas?: boolean;
+  webgl?: boolean;
+  audio?: boolean;
+  fonts?: boolean | string[];  // true for default list, or custom font list
+  mediaDevices?: boolean;
+  networkInfo?: boolean;
+  timezone?: boolean;
+  incognitoDetection?: boolean;
+
+  // Timeouts
+  timeout?: number;           // Global timeout (default: 5000ms)
+  methodTimeout?: number;     // Per-method timeout (default: 1000ms)
+
+  // Preset (overrides individual options)
+  preset?: 'minimal' | 'standard' | 'comprehensive';
+}
+```
+
+#### Font Detection
+
+```typescript
+// Use default font list
+await device.getAsync({ fonts: true });
+
+// Use custom font list
+await device.getAsync({
+  fonts: ['Arial', 'Times New Roman', 'Helvetica', 'Courier New']
+});
+```
+
+## Usage Examples
+
+### Basic Device Detection
+
+```typescript
+import { DeviceUUID } from 'device-uuid';
+
 const device = new DeviceUUID();
 const info = device.parse();
 
-// Create custom UUID from specific properties
-const customData = [
-  info.language,
-  info.platform,
-  info.os,
-  info.cpuCores,
-  info.isAuthoritative,
-  info.silkAccelerated,
-  info.isKindleFire,
-  info.isDesktop,
-  info.isMobile,
-  info.isTablet,
-  info.isWindows,
-  info.isLinux,
-  info.isLinux64,
-  info.isMac,
-  info.isiPad,
-  info.isiPhone,
-  info.isiPod,
-  info.isSmartTV,
-  info.pixelDepth,
-  info.isTouchScreen,
-].join(':');
+if (info.isMobile) {
+  console.log('Mobile device detected');
+} else if (info.isTablet) {
+  console.log('Tablet device detected');
+} else {
+  console.log('Desktop device detected');
+}
 
-const customUUID = info.hashMD5(customData);
+console.log(`Browser: ${info.browser} ${info.version}`);
+console.log(`OS: ${info.os}`);
+console.log(`Platform: ${info.platform}`);
 ```
 
-#### Parse Custom User Agent String
+### Advanced Fingerprinting
 
-```javascript
+```typescript
+import { DeviceUUID } from 'device-uuid';
+
 const device = new DeviceUUID();
+
+// Check feature support before using
+if (DeviceUUID.isFeatureSupported('canvas')) {
+  const uuid = await device.getAsync({
+    canvas: true,
+    webgl: true,
+    timeout: 5000
+  });
+  console.log('Advanced UUID:', uuid);
+}
+```
+
+### Detailed Fingerprint Analysis
+
+```typescript
+import { DeviceUUID } from 'device-uuid';
+
+const device = new DeviceUUID();
+
+const details = await device.getDetailedAsync({
+  preset: 'standard'
+});
+
+console.log('UUID:', details.uuid);
+console.log('Components:', details.components);
+console.log('Duration:', details.duration, 'ms');
+
+// Check which components were used
+for (const [key, value] of Object.entries(details.components)) {
+  if (value !== null) {
+    console.log(`${key}: ${value}`);
+  }
+}
+```
+
+### Custom User Agent Parsing
+
+```typescript
+import { DeviceUUID } from 'device-uuid';
+
+const device = new DeviceUUID();
+
+// Parse a custom user agent string
 const customUA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15';
 const info = device.parse(customUA);
 
 console.log(info.isiPhone); // true
 console.log(info.os); // iOS
+console.log(info.browser); // Safari
 ```
 
-## API Reference
+### Error Handling
 
-### DeviceUUID
+```typescript
+import { DeviceUUID } from 'device-uuid';
 
-#### Methods
+const device = new DeviceUUID();
 
-- `get(customData?: string): string` - Generate a UUID based on device characteristics
-- `parse(source?: string): AgentInfo` - Parse user agent string and return device information
-- `reset(): this` - Reset the device information to default values
-
-### AgentInfo Interface
-
-The `parse()` method returns an object with the following properties:
-
-#### Device Type Flags
-
-- `isDesktop: boolean` - Desktop computer
-- `isMobile: boolean` - Mobile phone
-- `isTablet: boolean` - Tablet device
-- `isBot: boolean | string` - Bot/crawler detection
-- `isSmartTV: boolean` - Smart TV device
-- `isTouchScreen: boolean` - Touch screen support
-
-#### Browser Information
-
-- `browser: string` - Browser name (Chrome, Firefox, Safari, Edge, etc.)
-- `version: string` - Browser version
-- `isChrome: boolean`
-- `isFirefox: boolean`
-- `isSafari: boolean`
-- `isEdge: boolean`
-- `isOpera: boolean`
-- `isIE: boolean`
-
-#### Operating System
-
-- `os: string` - Operating system name and version
-- `isWindows: boolean`
-- `isMac: boolean`
-- `isLinux: boolean`
-- `isLinux64: boolean`
-- `isChromeOS: boolean`
-
-#### Mobile Platforms
-
-- `isAndroid: boolean`
-- `isAndroidTablet: boolean`
-- `isiPhone: boolean`
-- `isiPad: boolean`
-- `isiPod: boolean`
-- `isSamsung: boolean`
-- `isBlackberry: boolean`
-
-#### Device Properties
-
-- `platform: string` - Platform name
-- `language: string` - Browser language
-- `colorDepth: number` - Screen color depth
-- `pixelDepth: number` - Screen pixel depth
-- `resolution: [number, number]` - Screen resolution [width, height]
-- `cpuCores: number` - Number of CPU cores
-- `source: string` - Original user agent string
-
-#### Utility Functions
-
-- `hashMD5(value: string): string` - Generate MD5 hash
-- `hashInt(value: string): number` - Generate integer hash
-
-## Supported Detection
-
-### Operating Systems
-
-- Windows (7, 8, 8.1, 10, 11)
-- macOS (all versions including Catalina, Big Sur, Monterey, Ventura, Sonoma, Sequoia)
-- Linux (including Ubuntu and other distributions)
-- iOS
-- Android
-- Chrome OS
-- Windows Phone
-
-### Browsers
-
-- Chrome / Chromium
-- Firefox
-- Safari
-- Edge (Chromium and Legacy)
-- Opera
-- Internet Explorer
-- PhantomJS
-- UC Browser
-- And many more
-
-### Device Types
-
-- Desktop computers
-- Mobile phones
-- Tablets
-- Smart TVs (Samsung, LG, Apple TV)
-- Kindle Fire devices
-- Bots and crawlers (Google, Bing, Yandex, etc.)
-
-## Bundle Sizes
-
-- ESM: ~31 KB (unminified)
-- CJS: ~31 KB (unminified)
-- Browser (IIFE): ~34 KB (unminified), ~19 KB (minified)
-
-## Example Output
-
-```javascript
-{
-  "isMobile": false,
-  "isDesktop": true,
-  "isBot": false,
-  "isTablet": false,
-  "isiPad": false,
-  "isiPhone": false,
-  "isAndroid": false,
-  "isBlackberry": false,
-  "isOpera": false,
-  "isIE": false,
-  "isEdge": false,
-  "isChrome": true,
-  "isFirefox": false,
-  "isSafari": false,
-  "isWindows": true,
-  "isMac": false,
-  "isLinux": false,
-  "browser": "Chrome",
-  "version": "120.0.0.0",
-  "os": "Windows 11",
-  "platform": "Microsoft Windows",
-  "language": "en-US",
-  "colorDepth": 24,
-  "pixelDepth": 24,
-  "resolution": [1920, 1080],
-  "cpuCores": 8,
-  "source": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36...",
-  "hashMD5": [Function],
-  "hashInt": [Function]
+try {
+  const uuid = await device.getAsync({
+    preset: 'comprehensive',
+    timeout: 10000
+  });
+  console.log('UUID:', uuid);
+} catch (error) {
+  console.error('Fingerprinting failed:', error);
+  // Fall back to basic UUID
+  const basicUuid = device.get();
+  console.log('Basic UUID:', basicUuid);
 }
 ```
 
-### LICENSE
+## AgentInfo Interface
+
+The `parse()` method returns an `AgentInfo` object with the following properties:
+
+### Device Type Flags
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `isDesktop` | boolean | Desktop computer |
+| `isMobile` | boolean | Mobile phone |
+| `isTablet` | boolean | Tablet device |
+| `isBot` | boolean \| string | Bot/crawler detection |
+| `isSmartTV` | boolean | Smart TV device |
+| `isTouchScreen` | boolean | Touch screen support |
+
+### Browser Information
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `browser` | string | Browser name (Chrome, Firefox, Safari, Edge, etc.) |
+| `version` | string | Browser version |
+| `isChrome` | boolean | Chrome browser |
+| `isFirefox` | boolean | Firefox browser |
+| `isSafari` | boolean | Safari browser |
+| `isEdge` | boolean | Edge browser |
+| `isOpera` | boolean | Opera browser |
+| `isIE` | boolean | Internet Explorer |
+
+### Operating System
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `os` | string | Operating system name and version |
+| `isWindows` | boolean | Windows OS |
+| `isMac` | boolean | macOS |
+| `isLinux` | boolean | Linux OS |
+| `isLinux64` | boolean | 64-bit Linux |
+| `isChromeOS` | boolean | Chrome OS |
+
+### Mobile Platforms
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `isAndroid` | boolean | Android platform |
+| `isAndroidTablet` | boolean | Android tablet |
+| `isiPhone` | boolean | iPhone |
+| `isiPad` | boolean | iPad |
+| `isiPod` | boolean | iPod touch |
+| `isSamsung` | boolean | Samsung device |
+| `isBlackberry` | boolean | Blackberry device |
+
+### Device Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `platform` | string | Platform name |
+| `language` | string | Browser language |
+| `colorDepth` | number | Screen color depth |
+| `pixelDepth` | number | Screen pixel depth |
+| `resolution` | [number, number] | Screen resolution [width, height] |
+| `cpuCores` | number | Number of CPU cores |
+| `source` | string | Original user agent string |
+
+### Utility Functions
+
+| Method | Description |
+|--------|-------------|
+| `hashMD5(value: string): string` | Generate MD5 hash |
+| `hashInt(value: string): number` | Generate integer hash |
+
+## Type Exports
+
+The library exports the following TypeScript types:
+
+```typescript
+import type {
+  DeviceUUIDOptions,
+  AgentInfo,
+  FingerprintOptions,
+  FingerprintDetails,
+  FingerprintComponent,
+  FingerprintPreset,
+  FingerprintFeature
+} from 'device-uuid';
+```
+
+## Bundle Sizes
+
+| Format | Size |
+|--------|------|
+| ESM | ~31 KB (unminified) |
+| CJS | ~31 KB (unminified) |
+| Browser (IIFE) | ~34 KB (unminified) |
+| Browser (IIFE, minified) | ~19 KB |
+
+## Browser Support
+
+- Chrome / Chromium (all versions)
+- Firefox (all versions)
+- Safari (all versions)
+- Edge (Chromium and Legacy)
+- Opera (all versions)
+- Internet Explorer 11+
+
+## Privacy Considerations
+
+This library follows a **privacy-by-design** approach:
+
+1. **Opt-in Default**: All advanced fingerprinting methods are **disabled by default**
+2. **User Control**: Explicit configuration required for each fingerprinting method
+3. **Timeout Protection**: All async operations have configurable timeouts
+4. **Error Handling**: Graceful fallbacks when methods fail or are blocked
+5. **No Data Exfiltration**: All processing happens locally; nothing is sent to external servers
+
+When using advanced fingerprinting:
+- Always inform users about data collection
+- Obtain appropriate consent when required
+- Provide a way to opt-out
+- Consider using the `minimal` preset for basic identification only
+
+## License
 
 [MIT](LICENSE) © Aleksejs Gordejevs and contributors.

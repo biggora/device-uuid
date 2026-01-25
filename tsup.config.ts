@@ -21,9 +21,9 @@ export default defineConfig([
   },
   // Browser IIFE build (unminified)
   {
-    entry: ['src/index.ts'],
+    entry: { 'index.browser': 'src/browser.ts' },
     format: ['iife'],
-    globalName: 'DeviceUUID',
+    globalName: 'DeviceUUIDModule',
     splitting: false,
     sourcemap: true,
     clean: false,
@@ -34,15 +34,15 @@ export default defineConfig([
     platform: 'browser',
     outExtension() {
       return {
-        js: '.browser.js',
+        js: '.js',
       };
     },
   },
   // Browser IIFE build (minified)
   {
-    entry: ['src/index.ts'],
+    entry: { 'index.browser.min': 'src/browser.ts' },
     format: ['iife'],
-    globalName: 'DeviceUUID',
+    globalName: 'DeviceUUIDModule',
     splitting: false,
     sourcemap: true,
     clean: false,
@@ -53,7 +53,7 @@ export default defineConfig([
     platform: 'browser',
     outExtension() {
       return {
-        js: '.browser.min.js',
+        js: '.js',
       };
     },
   },

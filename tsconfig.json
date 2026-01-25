@@ -32,7 +32,7 @@
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true,
-
+    "noImplicitAny": true,
     // Additional checks
     "skipLibCheck": true,
     "allowUnusedLabels": false,
@@ -46,6 +46,13 @@
     "preserveConstEnums": true,
     "newLine": "lf"
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "lib", "**/*.spec.ts", "**/*.test.ts"]
+  "include": [
+    "src/**/*",
+    "tests/**/*",
+    "examples/**/*",
+    "scripts/**/*",
+    "types/**/*",
+    "vitest.config.ts"
+  ],
+  "exclude": ["node_modules", "dist", "lib"]
 }

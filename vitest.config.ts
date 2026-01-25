@@ -24,7 +24,7 @@ export default defineConfig({
 
     // Test file patterns
     include: ['tests/**/*.test.ts', 'tests/**/*.spec.ts'],
-    exclude: ['**/node_modules/**', '**/dist/**'],
+    exclude: ['**/node_modules/**', '**/dist/**', 'tests/e2e/**'],
 
     // Test timeouts
     testTimeout: 10000, // 10 seconds
@@ -33,7 +33,16 @@ export default defineConfig({
     // Reporter configuration
     reporters: ['default'],
 
-    // Isolate tests for reliability
+    // Run tests in sequence to avoid module loading issues
     isolate: true,
+
+    // Pool options for consistent module loading
+    pool: 'forks',
+    // @ts-ignore - poolOptions is valid but not in all vitest versions
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
   },
 });

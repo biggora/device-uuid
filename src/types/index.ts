@@ -159,3 +159,92 @@ export interface OSPatterns {
 export interface PlatformPatterns {
   [key: string]: RegExp;
 }
+
+/**
+ * Supported fingerprinting features
+ */
+export type FingerprintFeature =
+  | 'canvas'
+  | 'webgl'
+  | 'audio'
+  | 'fonts'
+  | 'mediaDevices'
+  | 'networkInfo'
+  | 'timezone'
+  | 'incognitoDetection';
+
+/**
+ * Extended options for async fingerprint generation
+ * All advanced fingerprinting methods are opt-in (disabled by default) for privacy
+ */
+export interface FingerprintOptions {
+  /** Enable Canvas fingerprinting (default: false) */
+  canvas?: boolean;
+  /** Enable WebGL fingerprinting (default: false) */
+  webgl?: boolean;
+  /** Enable AudioContext fingerprinting (default: false) */
+  audio?: boolean;
+  /** Enable font detection - boolean or custom font list (default: false) */
+  fonts?: boolean | string[];
+  /** Enable media devices enumeration (default: false) */
+  mediaDevices?: boolean;
+  /** Enable network information collection (default: false) */
+  networkInfo?: boolean;
+  /** Enable timezone collection (default: false) */
+  timezone?: boolean;
+  /** Enable incognito/private mode detection (default: false) */
+  incognitoDetection?: boolean;
+  /** Global timeout in milliseconds (default: 5000) */
+  timeout?: number;
+  /** Per-method timeout in milliseconds (default: 1000) */
+  methodTimeout?: number;
+  /** Preset name to use as base configuration (optional) */
+  preset?: FingerprintPreset;
+}
+
+/**
+ * Individual fingerprint component result
+ */
+export interface FingerprintComponent {
+  /** Component name */
+  name: string;
+  /** Hash value or null if unavailable */
+  value: string | null;
+  /** Whether collection succeeded */
+  success: boolean;
+  /** Error message if collection failed */
+  error?: string;
+  /** Time taken to collect in milliseconds */
+  duration?: number;
+}
+
+/**
+ * Detailed fingerprint result with all components
+ */
+export interface FingerprintDetails {
+  /** Final combined UUID */
+  uuid: string;
+  /** Individual component results */
+  components: {
+    basic: FingerprintComponent;
+    canvas?: FingerprintComponent;
+    webgl?: FingerprintComponent;
+    audio?: FingerprintComponent;
+    fonts?: FingerprintComponent;
+    mediaDevices?: FingerprintComponent;
+    networkInfo?: FingerprintComponent;
+    timezone?: FingerprintComponent;
+    incognito?: FingerprintComponent;
+  };
+  /** Confidence score (0-1) based on available data points */
+  confidence: number;
+  /** Total fingerprinting duration in milliseconds */
+  duration: number;
+  /** Timestamp when fingerprint was generated */
+  timestamp: number;
+}
+
+/**
+ * Preset configuration names for fingerprint options
+ */
+export type FingerprintPreset = 'minimal' | 'standard' | 'comprehensive';

@@ -51,7 +51,6 @@
   "include": [
     "src/**/*",
     "tests/**/*",
-    "examples/**/*",
     "scripts/**/*",
     "types/**/*",
     "vitest.config.ts"

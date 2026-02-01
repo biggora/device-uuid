@@ -48,12 +48,6 @@
     "newLine": "lf",
     "jsx": "react"
   },
-  "include": [
-    "src/**/*",
-    "tests/**/*",
-    "scripts/**/*",
-    "types/**/*",
-    "vitest.config.ts"
-  ],
+  "include": ["src/**/*", "tests/**/*", "scripts/**/*", "types/**/*", "vitest.config.ts"],
   "exclude": ["node_modules", "dist", "lib"]
 }

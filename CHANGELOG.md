@@ -5,6 +5,29 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.1] - 2025-02-01
+
+### Fixed
+
+- **Browser Example** - Fixed `new DeviceUUID.DeviceUUID()` syntax error to `new DeviceUUID()`
+- **Package Exports** - Corrected export conditions to prioritize ESM/CJS over IIFE for module imports
+- **Type Definitions Path** - Fixed types path from `./dist/types/index.d.ts` to `./dist/index.d.ts`
+- **Dependencies** - Removed incorrect `install` and `playwright` from runtime dependencies (now zero runtime deps)
+
+### Added
+
+- **React Example Component** - Simple React component example with TypeScript support
+- **React Testing** - Unit tests for React component using @testing-library/react
+- **Separate Browser Export** - New `device-uuid/browser` export path for script tag usage
+- **Documentation** - React integration example in README.md
+
+### Changed
+
+- **Package Exports** - Restructured for better bundler compatibility
+  - ESM and CJS are now primary exports (before: `browser` condition took precedence)
+  - Browser IIFE available via `device-uuid/browser` subpath export
+- **Developer Dependencies** - Added React, React DOM, and testing libraries for examples
+
 ## [3.0.0] - 2025-01-25
 
 ### Major Release - Async Fingerprinting & Enhanced Privacy
@@ -14,12 +37,14 @@ This release introduces comprehensive async fingerprinting capabilities with pri
 ### Added
 
 #### Async API
+
 - `getAsync()` - Generate UUID with advanced async fingerprinting methods
 - `getDetailedAsync()` - Generate UUID with detailed component breakdown and metadata
 - `getComponents()` - Access individual fingerprint components
 - `isFeatureSupported()` - Static method to check feature availability at runtime
 
 #### Advanced Fingerprinting Methods (All Opt-In)
+
 - **Canvas Fingerprinting** - 2D rendering context extraction via `getCanvasFingerprint()`
 - **WebGL Fingerprinting** - GPU and graphics capabilities detection via `getWebGLFingerprint()`
 - **Audio Fingerprinting** - AudioContext-based fingerprinting via `getAudioFingerprint()`
@@ -30,12 +55,14 @@ This release introduces comprehensive async fingerprinting capabilities with pri
 - **Incognito Detection** - Private/incognito browser mode detection heuristics
 
 #### Configuration System
+
 - **Presets** - Pre-configured options: `minimal`, `standard`, `comprehensive`
 - **Custom Options** - Fine-grained control over each fingerprinting method
 - **Timeout Protection** - Global and per-method timeout configuration
 - **Font Customization** - Support for custom font lists in font detection
 
 #### TypeScript Types
+
 - `FingerprintOptions` - Configuration interface for async fingerprinting
 - `FingerprintDetails` - Detailed output interface with components, options, and duration
 - `FingerprintComponent` - Individual component type definition
@@ -43,11 +70,13 @@ This release introduces comprehensive async fingerprinting capabilities with pri
 - `FingerprintFeature` - Feature detection type: 'canvas' | 'webgl' | 'audio' | 'fonts'
 
 #### Browser Compatibility
+
 - Browser detection utilities in `src/utils/browser-compatibility.ts`
 - Feature support detection for all fingerprinting methods
 - Graceful degradation when features are unavailable
 
 #### Build System
+
 - **tsup** - Modern TypeScript build tool replacing legacy bundler
 - **Triple Output** - ESM, CJS, and IIFE (browser) builds from single source
 - **Browser Build** - Separate entry point (`src/browser.ts`) for IIFE/global export
@@ -55,6 +84,7 @@ This release introduces comprehensive async fingerprinting capabilities with pri
 - **Type Declarations** - Automatic `.d.ts` generation
 
 #### Testing
+
 - **Vitest** - Modern unit testing framework
 - **Playwright** - Cross-browser E2E testing (Chromium, Firefox, WebKit)
 - **16+ Unit Tests** - Comprehensive coverage of all functionality
@@ -63,6 +93,7 @@ This release introduces comprehensive async fingerprinting capabilities with pri
 - **Performance Tests** - Benchmark suite for performance validation
 
 #### Code Quality
+
 - **ESLint** - Modern ESLint configuration with TypeScript support
 - **Prettier** - Code formatting with consistent style
 - **Strict TypeScript** - All strict checks enabled, no unused locals/parameters
@@ -71,20 +102,24 @@ This release introduces comprehensive async fingerprinting capabilities with pri
 ### Changed
 
 #### Architecture
+
 - **Modular Structure** - Reorganized into `core/`, `fingerprints/`, `utils/`, `types/`, `constants/`
 - **Dual API Pattern** - Separate synchronous (basic) and asynchronous (advanced) APIs
 - **Entry Points** - Separate entry points for module (`index.ts`) and browser (`browser.ts`) builds
 
 #### Build Configuration
+
 - **Target ES2020** - Modern JavaScript target for better performance and smaller bundles
 - **Module Resolution** - Changed to 'bundler' for improved compatibility
 - **Package Exports** - Proper `exports` field for selective bundling
 
 #### Dependencies
+
 - **Zero Runtime Dependencies** - Pure TypeScript implementation
 - - Removed all legacy runtime dependencies
 
 #### Package Structure
+
 - **package.json** - Updated exports field for proper module resolution
 - **tsconfig.json** - Updated for ES2020 target and bundler resolution
 - **vitest.config.ts** - Added Vitest configuration
@@ -118,12 +153,12 @@ This release introduces comprehensive async fingerprinting capabilities with pri
 
 ### Bundle Sizes
 
-| Format | Size |
-|--------|------|
-| ESM | ~31 KB (unminified) |
-| CJS | ~31 KB (unminified) |
-| Browser (IIFE) | ~34 KB (unminified) |
-| Browser (IIFE, minified) | ~19 KB |
+| Format                   | Size                |
+| ------------------------ | ------------------- |
+| ESM                      | ~31 KB (unminified) |
+| CJS                      | ~31 KB (unminified) |
+| Browser (IIFE)           | ~34 KB (unminified) |
+| Browser (IIFE, minified) | ~19 KB              |
 
 ### Breaking Changes from 2.x
 
@@ -150,7 +185,7 @@ const advancedUuid = await device.getAsync({
   canvas: true,
   webgl: true,
   audio: true,
-  fonts: true
+  fonts: true,
 });
 
 // Or use a preset
@@ -170,5 +205,6 @@ const standardUuid = await device.getAsync({ preset: 'standard' });
 - Browser detection and version parsing
 - Bot detection for web crawlers
 
-[3.0.0]: https://github.com/yourusername/device-uuid/releases/tag/v3.0.0
-[2.0.0]: https://github.com/yourusername/device-uuid/releases/tag/v2.0.0
+[3.0.1]: https://github.com/biggora/device-uuid/releases/tag/v3.0.1
+[3.0.0]: https://github.com/biggora/device-uuid/releases/tag/v3.0.0
+[2.0.0]: https://github.com/biggora/device-uuid/releases/tag/v2.0.0

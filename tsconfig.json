@@ -23,6 +23,7 @@
     "declarationDir": "./dist/types",
 
     // Output configuration
+    "rootDir": ".",
     "outDir": "./dist",
 
     // Strict type checking for quality
@@ -44,7 +45,8 @@
     // Emit
     "removeComments": false,
     "preserveConstEnums": true,
-    "newLine": "lf"
+    "newLine": "lf",
+    "jsx": "react"
   },
   "include": [
     "src/**/*",

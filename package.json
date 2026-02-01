@@ -1,7 +1,7 @@
 {
   "name": "device-uuid",
   "description": "Fast browser device uuid generation library.",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "homepage": "https://github.com/biggora/device-uuid/",
   "repository": {
     "type": "git",
@@ -31,13 +31,17 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "browser": "./dist/index.browser.min.js",
-  "types": "./dist/types/index.d.ts",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
-      "types": "./dist/types/index.d.ts",
-      "browser": "./dist/index.browser.min.js",
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./browser": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.browser.min.js"
     }
   },
   "files": [
@@ -70,22 +74,25 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^24.9.2",
+    "@types/react": "^19.2.10",
+    "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
+    "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.0.5",
     "eslint": "^9.38.0",
     "happy-dom": "^20.0.10",
     "http-server": "^14.1.1",
     "prettier": "^3.6.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "rimraf": "^6.0.1",
     "tsup": "^8.5.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",
     "vitest": "^4.0.5"
-  },
-  "dependencies": {
-    "install": "^0.13.0",
-    "playwright": "^1.58.0"
   }
 }

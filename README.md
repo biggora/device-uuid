@@ -46,10 +46,32 @@ console.log(info.isMobile); // false
 ```html
 <script src="node_modules/device-uuid/dist/index.browser.min.js"></script>
 <script>
-  const device = new DeviceUUID.DeviceUUID();
+  const device = new DeviceUUID();
   const uuid = device.get();
   console.log('Device UUID:', uuid);
 </script>
+```
+
+### React
+
+```tsx
+'use client';
+
+import { useEffect, useState } from 'react';
+import { DeviceUUID } from 'device-uuid';
+
+export function DeviceInfo() {
+  const [uuid, setUuid] = useState<string | null>(null);
+
+  useEffect(() => {
+    const device = new DeviceUUID();
+    setUuid(device.get());
+  }, []);
+
+  if (!uuid) return <p>Loading...</p>;
+
+  return <p>Device UUID: {uuid}</p>;
+}
 ```
 
 ## API Reference
@@ -103,7 +125,7 @@ const uuid = await device.getAsync({
   webgl: true,
   audio: true,
   fonts: true,
-  timeout: 5000
+  timeout: 5000,
 });
 
 // Or use a preset
@@ -132,9 +154,9 @@ Check if a fingerprinting feature is supported in the current environment.
 ```typescript
 import { DeviceUUID } from 'device-uuid';
 
-DeviceUUID.isFeatureSupported('canvas');  // true/false
-DeviceUUID.isFeatureSupported('webgl');   // true/false
-DeviceUUID.isFeatureSupported('audio');   // true/false
+DeviceUUID.isFeatureSupported('canvas'); // true/false
+DeviceUUID.isFeatureSupported('webgl'); // true/false
+DeviceUUID.isFeatureSupported('audio'); // true/false
 ```
 
 ## Configuration Options
@@ -164,15 +186,15 @@ interface FingerprintOptions {
   canvas?: boolean;
   webgl?: boolean;
   audio?: boolean;
-  fonts?: boolean | string[];  // true for default list, or custom font list
+  fonts?: boolean | string[]; // true for default list, or custom font list
   mediaDevices?: boolean;
   networkInfo?: boolean;
   timezone?: boolean;
   incognitoDetection?: boolean;
 
   // Timeouts
-  timeout?: number;           // Global timeout (default: 5000ms)
-  methodTimeout?: number;     // Per-method timeout (default: 1000ms)
+  timeout?: number; // Global timeout (default: 5000ms)
+  methodTimeout?: number; // Per-method timeout (default: 1000ms)
 
   // Preset (overrides individual options)
   preset?: 'minimal' | 'standard' | 'comprehensive';
@@ -187,7 +209,7 @@ await device.getAsync({ fonts: true });
 
 // Use custom font list
 await device.getAsync({
-  fonts: ['Arial', 'Times New Roman', 'Helvetica', 'Courier New']
+  fonts: ['Arial', 'Times New Roman', 'Helvetica', 'Courier New'],
 });
 ```
 
@@ -226,7 +248,7 @@ if (DeviceUUID.isFeatureSupported('canvas')) {
   const uuid = await device.getAsync({
     canvas: true,
     webgl: true,
-    timeout: 5000
+    timeout: 5000,
   });
   console.log('Advanced UUID:', uuid);
 }
@@ -240,7 +262,7 @@ import { DeviceUUID } from 'device-uuid';
 const device = new DeviceUUID();
 
 const details = await device.getDetailedAsync({
-  preset: 'standard'
+  preset: 'standard',
 });
 
 console.log('UUID:', details.uuid);
@@ -281,7 +303,7 @@ const device = new DeviceUUID();
 try {
   const uuid = await device.getAsync({
     preset: 'comprehensive',
-    timeout: 10000
+    timeout: 10000,
   });
   console.log('UUID:', uuid);
 } catch (error) {
@@ -298,68 +320,68 @@ The `parse()` method returns an `AgentInfo` object with the following properties
 
 ### Device Type Flags
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `isDesktop` | boolean | Desktop computer |
-| `isMobile` | boolean | Mobile phone |
-| `isTablet` | boolean | Tablet device |
-| `isBot` | boolean \| string | Bot/crawler detection |
-| `isSmartTV` | boolean | Smart TV device |
-| `isTouchScreen` | boolean | Touch screen support |
+| Property        | Type              | Description           |
+| --------------- | ----------------- | --------------------- |
+| `isDesktop`     | boolean           | Desktop computer      |
+| `isMobile`      | boolean           | Mobile phone          |
+| `isTablet`      | boolean           | Tablet device         |
+| `isBot`         | boolean \| string | Bot/crawler detection |
+| `isSmartTV`     | boolean           | Smart TV device       |
+| `isTouchScreen` | boolean           | Touch screen support  |
 
 ### Browser Information
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `browser` | string | Browser name (Chrome, Firefox, Safari, Edge, etc.) |
-| `version` | string | Browser version |
-| `isChrome` | boolean | Chrome browser |
-| `isFirefox` | boolean | Firefox browser |
-| `isSafari` | boolean | Safari browser |
-| `isEdge` | boolean | Edge browser |
-| `isOpera` | boolean | Opera browser |
-| `isIE` | boolean | Internet Explorer |
+| Property    | Type    | Description                                        |
+| ----------- | ------- | -------------------------------------------------- |
+| `browser`   | string  | Browser name (Chrome, Firefox, Safari, Edge, etc.) |
+| `version`   | string  | Browser version                                    |
+| `isChrome`  | boolean | Chrome browser                                     |
+| `isFirefox` | boolean | Firefox browser                                    |
+| `isSafari`  | boolean | Safari browser                                     |
+| `isEdge`    | boolean | Edge browser                                       |
+| `isOpera`   | boolean | Opera browser                                      |
+| `isIE`      | boolean | Internet Explorer                                  |
 
 ### Operating System
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `os` | string | Operating system name and version |
-| `isWindows` | boolean | Windows OS |
-| `isMac` | boolean | macOS |
-| `isLinux` | boolean | Linux OS |
-| `isLinux64` | boolean | 64-bit Linux |
-| `isChromeOS` | boolean | Chrome OS |
+| Property     | Type    | Description                       |
+| ------------ | ------- | --------------------------------- |
+| `os`         | string  | Operating system name and version |
+| `isWindows`  | boolean | Windows OS                        |
+| `isMac`      | boolean | macOS                             |
+| `isLinux`    | boolean | Linux OS                          |
+| `isLinux64`  | boolean | 64-bit Linux                      |
+| `isChromeOS` | boolean | Chrome OS                         |
 
 ### Mobile Platforms
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `isAndroid` | boolean | Android platform |
-| `isAndroidTablet` | boolean | Android tablet |
-| `isiPhone` | boolean | iPhone |
-| `isiPad` | boolean | iPad |
-| `isiPod` | boolean | iPod touch |
-| `isSamsung` | boolean | Samsung device |
-| `isBlackberry` | boolean | Blackberry device |
+| Property          | Type    | Description       |
+| ----------------- | ------- | ----------------- |
+| `isAndroid`       | boolean | Android platform  |
+| `isAndroidTablet` | boolean | Android tablet    |
+| `isiPhone`        | boolean | iPhone            |
+| `isiPad`          | boolean | iPad              |
+| `isiPod`          | boolean | iPod touch        |
+| `isSamsung`       | boolean | Samsung device    |
+| `isBlackberry`    | boolean | Blackberry device |
 
 ### Device Properties
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `platform` | string | Platform name |
-| `language` | string | Browser language |
-| `colorDepth` | number | Screen color depth |
-| `pixelDepth` | number | Screen pixel depth |
+| Property     | Type             | Description                       |
+| ------------ | ---------------- | --------------------------------- |
+| `platform`   | string           | Platform name                     |
+| `language`   | string           | Browser language                  |
+| `colorDepth` | number           | Screen color depth                |
+| `pixelDepth` | number           | Screen pixel depth                |
 | `resolution` | [number, number] | Screen resolution [width, height] |
-| `cpuCores` | number | Number of CPU cores |
-| `source` | string | Original user agent string |
+| `cpuCores`   | number           | Number of CPU cores               |
+| `source`     | string           | Original user agent string        |
 
 ### Utility Functions
 
-| Method | Description |
-|--------|-------------|
-| `hashMD5(value: string): string` | Generate MD5 hash |
+| Method                           | Description           |
+| -------------------------------- | --------------------- |
+| `hashMD5(value: string): string` | Generate MD5 hash     |
 | `hashInt(value: string): number` | Generate integer hash |
 
 ## Type Exports
@@ -374,18 +396,18 @@ import type {
   FingerprintDetails,
   FingerprintComponent,
   FingerprintPreset,
-  FingerprintFeature
+  FingerprintFeature,
 } from 'device-uuid';
 ```
 
 ## Bundle Sizes
 
-| Format | Size |
-|--------|------|
-| ESM | ~31 KB (unminified) |
-| CJS | ~31 KB (unminified) |
-| Browser (IIFE) | ~34 KB (unminified) |
-| Browser (IIFE, minified) | ~19 KB |
+| Format                   | Size                |
+| ------------------------ | ------------------- |
+| ESM                      | ~31 KB (unminified) |
+| CJS                      | ~31 KB (unminified) |
+| Browser (IIFE)           | ~34 KB (unminified) |
+| Browser (IIFE, minified) | ~19 KB              |
 
 ## Browser Support
 
@@ -407,6 +429,7 @@ This library follows a **privacy-by-design** approach:
 5. **No Data Exfiltration**: All processing happens locally; nothing is sent to external servers
 
 When using advanced fingerprinting:
+
 - Always inform users about data collection
 - Obtain appropriate consent when required
 - Provide a way to opt-out

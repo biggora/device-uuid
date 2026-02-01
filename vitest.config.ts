@@ -1,6 +1,8 @@
 import { defineConfig } from 'vitest/config';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  plugins: [react()],
   test: {
     // Test environment
     environment: 'happy-dom', // For DOM APIs (window, navigator, screen) - lighter and more compatible than jsdom
@@ -23,7 +25,7 @@ export default defineConfig({
     },
 
     // Test file patterns
-    include: ['tests/**/*.test.ts', 'tests/**/*.spec.ts'],
+    include: ['tests/**/*.test.ts', 'tests/**/*.spec.ts', 'tests/**/*.test.tsx'],
     exclude: ['**/node_modules/**', '**/dist/**', 'tests/e2e/**'],
 
     // Test timeouts

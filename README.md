@@ -2,6 +2,8 @@
 
 Fast browser device UUID generation library with comprehensive device detection and advanced fingerprinting capabilities. Written in TypeScript with zero runtime dependencies, supporting both Node.js and browser environments.
 
+[DeviceUUID Demo](https://gordejev.lv/en/device-uuid-demo/)
+
 ## Features
 
 - 🚀 Zero runtime dependencies

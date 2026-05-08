@@ -50,7 +50,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup",
+    "build": "tsup && node scripts/cjs-interop.mjs",
     "build:watch": "tsup --watch",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",

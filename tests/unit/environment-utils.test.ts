@@ -2,7 +2,7 @@
  * Unit tests for environment utility functions
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   isBrowser,
   isNode,
@@ -183,6 +183,31 @@ describe('Environment Utilities', () => {
       // In browser environments, pdfViewerEnabled is a standard Navigator property
       // In test environments (jsdom), it may be null if navigator is not fully implemented
       expect(result === null || result === undefined || typeof result === 'boolean').toBe(true);
+    });
+  });
+
+  describe('SSR safety (fixes #10, #13)', () => {
+    it('getUserAgent should return empty string when navigator is absent', () => {
+      // Simulate SSR: isBrowser() returns false
+      const originalWindow = (globalThis as Record<string, unknown>).window;
+      (globalThis as Record<string, unknown>).window = undefined;
+      try {
+        const ua = getUserAgent();
+        expect(ua).toBe('');
+      } finally {
+        (globalThis as Record<string, unknown>).window = originalWindow;
+      }
+    });
+
+    it('getNavigator should return undefined in non-browser environment', () => {
+      const originalWindow = (globalThis as Record<string, unknown>).window;
+      (globalThis as Record<string, unknown>).window = undefined;
+      try {
+        const nav = getNavigator();
+        expect(nav).toBeUndefined();
+      } finally {
+        (globalThis as Record<string, unknown>).window = originalWindow;
+      }
     });
   });
 });

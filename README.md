@@ -1,5 +1,6 @@
 [![npm version](https://img.shields.io/npm/v/device-uuid.svg)](https://www.npmjs.com/package/device-uuid)
 [![CI](https://img.shields.io/github/actions/workflow/status/biggora/device-uuid/ci.yml?branch=master)](https://github.com/biggora/device-uuid/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # device-uuid
 

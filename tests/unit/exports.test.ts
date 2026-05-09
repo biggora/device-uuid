@@ -5,6 +5,9 @@
 
 import { describe, it, expect } from 'vitest';
 
+// Import default export to verify it is the DeviceUUID class (fixes #14, #20)
+import DeviceUUIDDefault from '../../src';
+
 // Import from main index
 import {
   DeviceUUID,
@@ -145,10 +148,14 @@ describe('Module Exports', () => {
       expect(typeof isDebugInfoSupported).toBe('function');
     });
 
-    it('should have default export', () => {
-      // The default export is DeviceUUID, so we can't test it directly
-      // but we can verify that DeviceUUID is available
-      expect(DeviceUUID).toBeDefined();
+    it('should have default export equal to DeviceUUID class (fixes #14, #20)', () => {
+      // The default export must be the DeviceUUID class itself so that
+      // `import DeviceUUID from 'device-uuid'` and
+      // `const DeviceUUID = require('device-uuid')` both yield a constructor.
+      expect(DeviceUUIDDefault).toBeDefined();
+      expect(DeviceUUIDDefault).toBe(DeviceUUID);
+      expect(typeof DeviceUUIDDefault).toBe('function');
+      expect(() => new DeviceUUIDDefault()).not.toThrow();
     });
   });
 

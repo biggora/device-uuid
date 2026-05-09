@@ -253,8 +253,8 @@ export const BROWSER_WORKAROUNDS = {
     // Attempt to detect if browser is in privacy/private mode
     const indicators: string[] = [];
 
-    // Check for reduced storage quota
-    if ('storage' in navigator && 'estimate' in navigator.storage) {
+    // Check for reduced storage quota (guard against SSR/Node.js where navigator is undefined)
+    if (typeof navigator !== 'undefined' && 'storage' in navigator && 'estimate' in navigator.storage) {
       navigator.storage.estimate().then((estimate) => {
         if (estimate.quota && estimate.quota < 120000000) {
           indicators.push('low-storage-quota');

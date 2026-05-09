@@ -185,4 +185,29 @@ describe('Environment Utilities', () => {
       expect(result === null || result === undefined || typeof result === 'boolean').toBe(true);
     });
   });
+
+  describe('SSR safety (fixes #10, #13)', () => {
+    it('getUserAgent should return empty string when navigator is absent', () => {
+      // Simulate SSR: isBrowser() returns false
+      const originalWindow = (globalThis as Record<string, unknown>).window;
+      (globalThis as Record<string, unknown>).window = undefined;
+      try {
+        const ua = getUserAgent();
+        expect(ua).toBe('');
+      } finally {
+        (globalThis as Record<string, unknown>).window = originalWindow;
+      }
+    });
+
+    it('getNavigator should return undefined in non-browser environment', () => {
+      const originalWindow = (globalThis as Record<string, unknown>).window;
+      (globalThis as Record<string, unknown>).window = undefined;
+      try {
+        const nav = getNavigator();
+        expect(nav).toBeUndefined();
+      } finally {
+        (globalThis as Record<string, unknown>).window = originalWindow;
+      }
+    });
+  });
 });

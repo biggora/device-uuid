@@ -1,3 +1,6 @@
+[![npm version](https://img.shields.io/npm/v/device-uuid.svg)](https://www.npmjs.com/package/device-uuid)
+[![CI](https://img.shields.io/github/actions/workflow/status/biggora/device-uuid/ci.yml?branch=master)](https://github.com/biggora/device-uuid/actions)
+
 # device-uuid
 
 Fast browser device UUID generation library with comprehensive device detection and advanced fingerprinting capabilities. Written in TypeScript with zero runtime dependencies, supporting both Node.js and browser environments.

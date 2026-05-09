@@ -146,9 +146,9 @@ Generate UUID and return detailed fingerprint information.
 const details = await device.getDetailedAsync({ preset: 'standard' });
 
 console.log(details.uuid);       // Generated UUID
-console.log.details.components); // Individual components
+console.log(details.components); // Individual components
 console.log(details.options);    // Options used
-console.log.details.duration);   // Time taken (ms)
+console.log(details.duration);   // Time taken (ms)
 ```
 
 ### Static Methods

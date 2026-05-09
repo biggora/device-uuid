@@ -8,6 +8,10 @@
     "url": "git://github.com/biggora/device-uuid.git"
   },
   "license": "MIT",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://npmjs.org"
+  },
   "author": {
     "name": "Alexey Gordeyev",
     "email": "aleksej@gordejev.lv",

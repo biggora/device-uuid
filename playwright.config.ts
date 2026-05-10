@@ -41,7 +41,7 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'npx http-server . -p 18080 -c-1 --cors',
+    command: 'npm run build --silent && npx http-server . -p 18080 -c-1 --cors',
     url: 'http://localhost:18080',
     reuseExistingServer: false,
     timeout: 120000,

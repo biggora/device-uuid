@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.0.2] - 2026-05-10
+
+### Fixed
+
+- **ESM/SSR Compatibility** - Added browser environment guards so server-side module imports do not require `navigator`
+- **Node 20 Typecheck** - Fixed TypeScript compatibility for current Node type definitions
+- **README Logging Example** - Corrected example output formatting
+
+### Changed
+
+- **Dependency Lockfile** - Updated locked dependency metadata to resolve Dependabot alerts
+- **Release Automation** - Added GitHub Actions trusted publishing workflow for npm releases
+- **Package Publishing** - Declared public npm package access without forcing a custom registry URL
+- **Repository Badges** - Added npm version, CI, and MIT license badges to README
+
 ## [3.0.1] - 2025-02-01
 
 ### Fixed
@@ -205,6 +220,7 @@ const standardUuid = await device.getAsync({ preset: 'standard' });
 - Browser detection and version parsing
 - Bot detection for web crawlers
 
+[3.0.2]: https://github.com/biggora/device-uuid/releases/tag/v3.0.2
 [3.0.1]: https://github.com/biggora/device-uuid/releases/tag/v3.0.1
 [3.0.0]: https://github.com/biggora/device-uuid/releases/tag/v3.0.0
 [2.0.0]: https://github.com/biggora/device-uuid/releases/tag/v2.0.0

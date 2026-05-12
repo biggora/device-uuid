@@ -11,7 +11,7 @@ Complete API documentation for the device-uuid library.
 - [Types](#types)
   - [DeviceUUIDOptions](#deviceuuidoptions)
   - [FingerprintPreset](#fingerprintpreset)
-  - [FingerprintDetails](#fingerprintfdetails)
+  - [FingerprintDetails](#fingerprintdetails)
 - [Examples](#examples)
 
 ## Installation
@@ -133,9 +133,8 @@ Asynchronously generates a UUID and returns detailed information about the finge
 
 ```typescript
 const details = await device.getDetailedAsync('comprehensive');
-console.log(details.uuid);        // UUID string
-console.log(details.confidence);   // 0.85
-console.log.details.components);  // { canvas: "abc123...", webgl: "def456..." }
+console.log(details.uuid);       // UUID string
+console.log(details.components); // { canvas: "abc123...", webgl: "def456..." }
 ```
 
 ---
@@ -175,7 +174,7 @@ Parses the current user agent and returns detailed browser/device information.
 ```typescript
 const info = device.parse();
 console.log(info.browser);  // "Chrome"
-console.log.info.os);       // "Windows 10"
+console.log(info.os);       // "Windows 10"
 console.log(info.version);  // "120.0.6099.109"
 ```
 

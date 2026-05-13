@@ -42,7 +42,11 @@ console.log(detailedUuid);
 const details = await device.getDetailedAsync('standard');
 console.log(details.uuid); // The generated UUID
 console.log(details.confidence); // Confidence score (0-1)
-console.log(details.components); // Individual component hashes
+
+// Components are FingerprintComponent objects (basic is always present)
+console.log(details.components.basic.name);   // "basic"
+console.log(details.components.basic.value);  // hash or null
+console.log(details.components.canvas?.value); // optional
 ```
 
 ## Classes

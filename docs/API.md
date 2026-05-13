@@ -133,8 +133,13 @@ Asynchronously generates a UUID and returns detailed information about the finge
 
 ```typescript
 const details = await device.getDetailedAsync('comprehensive');
-console.log(details.uuid);       // UUID string
-console.log(details.components); // { canvas: "abc123...", webgl: "def456..." }
+console.log(details.uuid); // UUID string
+
+// Components are rich objects (basic is always present; advanced are optional)
+console.log(details.components.basic.name);   // "basic"
+console.log(details.components.basic.value);  // hash or null
+console.log(details.components.basic.success);
+console.log(details.components.canvas?.value); // optional
 ```
 
 ---
@@ -288,17 +293,19 @@ interface FingerprintDetails {
   /** The generated UUID */
   uuid: string;
 
-  /** Individual component hashes */
+  /** Individual component results */
   components: {
-    basic?: string; // Basic device properties hash
-    canvas?: string; // Canvas fingerprint hash
-    webgl?: string; // WebGL fingerprint hash
-    audio?: string; // Audio fingerprint hash
-    fonts?: string; // Font detection hash
-    mediaDevices?: string; // Media devices hash
-    networkInfo?: string; // Network info hash
-    timezone?: string; // Timezone hash
-    incognito?: string; // Incognito detection result
+    /** Basic device properties (always present) */
+    basic: FingerprintComponent;
+    /** Advanced fingerprint components (optional) */
+    canvas?: FingerprintComponent;
+    webgl?: FingerprintComponent;
+    audio?: FingerprintComponent;
+    fonts?: FingerprintComponent;
+    mediaDevices?: FingerprintComponent;
+    networkInfo?: FingerprintComponent;
+    timezone?: FingerprintComponent;
+    incognito?: FingerprintComponent;
   };
 
   /** Confidence score (0-1) based on available data */
@@ -309,6 +316,19 @@ interface FingerprintDetails {
 
   /** Timestamp of generation */
   timestamp: number;
+}
+
+interface FingerprintComponent {
+  /** Component name */
+  name: string;
+  /** Hash value or null if unavailable */
+  value: string | null;
+  /** Whether collection succeeded */
+  success: boolean;
+  /** Error message if collection failed */
+  error?: string;
+  /** Time taken to collect in milliseconds */
+  duration?: number;
 }
 ```
 

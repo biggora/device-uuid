@@ -14,7 +14,7 @@ Fast browser device UUID generation library with comprehensive device detection 
 - 📦 Multiple module formats (ESM, CJS, IIFE)
 - 🔍 Comprehensive device detection (OS, browser, platform)
 - 📱 Mobile, tablet, and desktop detection
-- 🤖 Bot detection (32+ known bot patterns)
+- 🤖 Bot detection (18 known bot patterns)
 - 📺 Smart TV and gaming console detection
 - 🎨 Advanced fingerprinting (Canvas, WebGL, Audio, Fonts)
 - ⚡ Dual API: Synchronous and Asynchronous

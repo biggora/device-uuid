@@ -87,7 +87,7 @@ export const BROWSER_PATTERNS: Readonly<BrowserPatterns> = {
  * Operating system detection patterns
  */
 export const OS_PATTERNS: Readonly<OSPatterns> = {
-  Windows11: /windows nt 10\.0.*(?:; win64; x64|; wow64).*(?:rv:|edg\/|chrome\/).*?(\d+)/i,
+  Windows11: /windows nt 10\.0/i,
   Windows10: /windows nt 10\.0/i,
   Windows81: /windows nt 6\.3/i,
   Windows8: /windows nt 6\.2/i,
@@ -126,8 +126,8 @@ export const OS_PATTERNS: Readonly<OSPatterns> = {
   Wii: /wii/i,
   PS3: /playstation 3/i,
   PSP: /playstation portable/i,
-  iPad: /\(iPad.*os (\d+)[._](\d+)/i,
-  iPhone: /\(iPhone.*os (\d+)[._](\d+)/i,
+  iPad: /\(ipad\b/i,
+  iPhone: /\(iphone\b/i,
   Bada: /Bada\/(\d+)\.(\d+)/i,
   Curl: /curl\/(\d+)\.(\d+)\.(\d+)/i,
 } as const;

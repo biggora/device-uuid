@@ -23,6 +23,14 @@ describe('Edge Cases and Error Conditions', () => {
       expect(uuid.length).toBe(36);
     });
 
+    it('should trim long padded user agents without regex backtracking', () => {
+      const device = new DeviceUUID();
+      const result = device.parse(`${' '.repeat(10000)}CustomBrowser/1.0${' '.repeat(10000)}`);
+
+      expect(result.source).toBe('CustomBrowser/1.0');
+      expect(result.browser).toBe('CustomBrowser');
+    });
+
     it('should handle special characters in user agent', () => {
       const device = new DeviceUUID();
       device.userAgent = 'Test/1.0 (®™©) <script>alert(1)</script>';

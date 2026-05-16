@@ -19,6 +19,17 @@ describe('Operating System Detection', () => {
       expect(result.os).toBe('Windows 11');
       expect(result.isWindows).toBe(true);
     });
+
+    it('should handle long Windows user agents without regex backtracking', () => {
+      const device = new DeviceUUID();
+      const filler = '; x'.repeat(10000);
+      const result = device.parse(
+        `Mozilla/5.0 (Windows NT 10.0; Win64; x64${filler}) AppleWebKit/537.36 Chrome/120.0.0.0 Safari/537.36`
+      );
+
+      expect(result.os).toBe('Windows 11');
+      expect(result.isWindows).toBe(true);
+    });
   });
 
   describe('macOS', () => {
@@ -96,6 +107,23 @@ describe('Operating System Detection', () => {
       expect(result.os).toBe('iOS');
       expect(result.isiPad).toBe(true);
       expect(result.isTablet).toBe(true);
+    });
+
+    it('should handle long iOS user agents without regex backtracking', () => {
+      const device = new DeviceUUID();
+      const filler = '; x'.repeat(10000);
+
+      const iphone = device.parse(
+        `Mozilla/5.0 (iPhone${filler}; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15`
+      );
+      const ipad = device.parse(
+        `Mozilla/5.0 (iPad${filler}; CPU OS 17_2 like Mac OS X) AppleWebKit/605.1.15`
+      );
+
+      expect(iphone.os).toBe('iOS');
+      expect(iphone.isiPhone).toBe(true);
+      expect(ipad.os).toBe('iOS');
+      expect(ipad.isiPad).toBe(true);
     });
   });
 

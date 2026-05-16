@@ -219,21 +219,56 @@ export class DeviceUUID {
   }
 
   /**
+   * Read a decimal integer at a known offset without applying an unbounded regex
+   * to the whole user-agent string.
+   */
+  private readLeadingInteger(source: string, start: number): number | null {
+    let end = start;
+    while (end < source.length) {
+      const code = source.charCodeAt(end);
+      if (code < 48 || code > 57) break;
+      end++;
+    }
+
+    if (end === start) return null;
+    return Number.parseInt(source.slice(start, end), 10);
+  }
+
+  private getWindows11BrowserMajorVersion(source: string): number | null {
+    const lowerSource = source.toLowerCase();
+    if (!lowerSource.includes('windows nt 10.0')) return null;
+    if (!lowerSource.includes('; win64; x64') && !lowerSource.includes('; wow64')) return null;
+
+    for (const marker of ['rv:', 'edg/', 'chrome/']) {
+      const markerIndex = lowerSource.indexOf(marker);
+      if (markerIndex === -1) continue;
+
+      const version = this.readLeadingInteger(source, markerIndex + marker.length);
+      if (version !== null) return version;
+    }
+
+    return null;
+  }
+
+  private hasIOSDeviceOS(source: string, device: 'ipad' | 'iphone'): boolean {
+    const lowerSource = source.toLowerCase();
+    const start = lowerSource.indexOf(`(${device}`);
+    if (start === -1) return false;
+
+    const end = lowerSource.indexOf(')', start);
+    const deviceSection = lowerSource.slice(start, end === -1 ? lowerSource.length : end);
+    return deviceSection.includes(' os ') || deviceSection.includes(` ${device} os `);
+  }
+
+  /**
    * Get operating system from user agent string
    */
   private getOS(source: string): string {
     // Windows versions - check Windows 11 before Windows 10
-    if (this.osPatterns.Windows11.test(source)) {
-      // Windows 11 uses NT 10.0 but can be detected by platform version
-      const match = source.match(this.osPatterns.Windows11);
-      if (match && match[1]) {
-        const version = parseInt(match[1]);
-        // Chrome/Edge version >= 96 typically indicates Windows 11
-        if (version >= 96) {
-          this.agent.isWindows = true;
-          return 'Windows 11';
-        }
-      }
+    const windows11BrowserMajorVersion = this.getWindows11BrowserMajorVersion(source);
+    if (windows11BrowserMajorVersion !== null && windows11BrowserMajorVersion >= 96) {
+      this.agent.isWindows = true;
+      return 'Windows 11';
     }
     if (this.osPatterns.Windows10.test(source)) {
       this.agent.isWindows = true;
@@ -384,11 +419,11 @@ export class DeviceUUID {
     }
 
     // Mobile OS - check before Mac to avoid false Mac detection on iOS devices
-    if (this.osPatterns.iPad.test(source)) {
+    if (this.hasIOSDeviceOS(source, 'ipad')) {
       this.agent.isiPad = true;
       return 'iOS';
     }
-    if (this.osPatterns.iPhone.test(source)) {
+    if (this.hasIOSDeviceOS(source, 'iphone')) {
       this.agent.isiPhone = true;
       return 'iOS';
     }
@@ -696,7 +731,7 @@ export class DeviceUUID {
     const ua = new DeviceUUID();
     const userAgent = source || getUserAgent();
 
-    ua.agent.source = userAgent.replace(/^\s*/, '').replace(/\s*$/, '');
+    ua.agent.source = userAgent.trim();
     ua.agent.os = ua.getOS(ua.agent.source);
     ua.agent.platform = ua.getPlatform(ua.agent.source);
     ua.agent.browser = ua.getBrowser(ua.agent.source);

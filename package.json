@@ -54,6 +54,7 @@
   ],
   "scripts": {
     "build": "tsup && node scripts/cjs-interop.mjs",
+    "build:pages": "npm run build && node scripts/build-pages.mjs",
     "build:watch": "tsup --watch",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",

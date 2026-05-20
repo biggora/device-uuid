@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>device-uuid Browser Demo | Device UUID and Fingerprinting API</title>
+  <meta name="description" content="Run the device-uuid browser demo locally in your browser. Generate a basic device UUID, inspect parsed user-agent data, and opt in to advanced fingerprinting methods.">
+  <link rel="canonical" href="https://biggora.github.io/device-uuid/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="device-uuid Browser Demo">
+  <meta property="og:description" content="A privacy-first browser demo for generating device UUIDs and testing opt-in fingerprinting support.">
+  <meta property="og:url" content="https://biggora.github.io/device-uuid/">
+  <meta property="og:site_name" content="device-uuid">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="device-uuid Browser Demo">
+  <meta name="twitter:description" content="Generate a device UUID and inspect browser fingerprint components without external services.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script src="assets/index.browser.min.js" defer></script>
+  <script src="demo.js" defer></script>
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareSourceCode",
+      "name": "device-uuid",
+      "description": "TypeScript library for browser device UUID generation and opt-in fingerprinting.",
+      "codeRepository": "https://github.com/biggora/device-uuid",
+      "programmingLanguage": "TypeScript",
+      "runtimePlatform": "Browser",
+      "license": "https://github.com/biggora/device-uuid/blob/master/LICENSE",
+      "url": "https://biggora.github.io/device-uuid/"
+    }
+  </script>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="topbar" aria-label="Primary">
+      <a class="brand" href="https://github.com/biggora/device-uuid">device-uuid</a>
+      <div class="nav-links">
+        <a href="https://github.com/biggora/device-uuid">GitHub</a>
+        <a href="https://www.npmjs.com/package/device-uuid">npm</a>
+        <a href="https://github.com/biggora/device-uuid/blob/master/docs/API.md">API docs</a>
+        <a href="https://github.com/biggora/device-uuid/blob/master/docs/BROWSER_LIMITATIONS.md">Browser limitations</a>
+      </div>
+    </nav>
+    <section class="hero" aria-labelledby="page-title">
+      <div>
+        <p class="eyebrow">Zero dependency browser identifier toolkit</p>
+        <h1 id="page-title">Device UUID generation with explicit fingerprint controls.</h1>
+        <p class="hero-copy">This demo runs entirely in your browser. The basic UUID is generated on load; advanced fingerprinting methods run only when you press the run button.</p>
+      </div>
+      <aside class="status-panel" aria-labelledby="library-status-title">
+        <h2 id="library-status-title">Library status</h2>
+        <div id="library-status" class="status-line status-pending" aria-live="polite">Waiting for browser bundle...</div>
+        <div class="support-grid" id="feature-support" aria-label="Current feature support"></div>
+      </aside>
+    </section>
+  </header>
+
+  <main class="page-grid">
+    <section class="panel panel-primary" aria-labelledby="basic-title">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">Synchronous API</p>
+          <h2 id="basic-title">Basic UUID</h2>
+        </div>
+        <button class="button button-ghost" type="button" id="copy-basic">Copy UUID</button>
+      </div>
+      <output class="uuid-output" id="basic-uuid" for="custom-data">Not generated</output>
+      <div id="basic-status" class="status-line" aria-live="polite"></div>
+      <form class="control-row" id="custom-data-form">
+        <label for="custom-data">Optional custom data for <code>get(customData)</code></label>
+        <div class="input-action">
+          <input id="custom-data" name="custom-data" type="text" autocomplete="off" spellcheck="false" placeholder="tenant:example or user supplied salt">
+          <button class="button" type="submit">Regenerate</button>
+        </div>
+      </form>
+      <div class="split">
+        <article>
+          <h3>Parsed browser info</h3>
+          <dl class="definition-grid" id="browser-info"></dl>
+        </article>
+        <article>
+          <h3>Sync components</h3>
+          <dl class="definition-grid hashes" id="sync-components"></dl>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="ua-title">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">Parser</p>
+          <h2 id="ua-title">User-agent inspection</h2>
+        </div>
+        <button class="button button-ghost" type="button" id="use-current-ua">Use current UA</button>
+      </div>
+      <label for="user-agent-input">User-agent string</label>
+      <textarea id="user-agent-input" rows="5" spellcheck="false"></textarea>
+      <div class="button-row">
+        <button class="button" type="button" id="parse-user-agent">Parse user-agent</button>
+      </div>
+      <dl class="definition-grid" id="ua-results"></dl>
+    </section>
+
+    <section class="panel advanced-panel" aria-labelledby="advanced-title">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">Explicit opt-in</p>
+          <h2 id="advanced-title">Advanced fingerprint run</h2>
+        </div>
+        <button class="button button-ghost" type="button" id="reset-results">Reset results</button>
+      </div>
+      <p class="notice warning">Advanced methods can inspect browser characteristics such as canvas, WebGL, audio, fonts, media device counts, network hints, timezone, and private-mode indicators. Nothing is sent off this page.</p>
+
+      <fieldset class="segmented" aria-label="Fingerprint mode">
+        <legend>Mode</legend>
+        <label><input type="radio" name="mode" value="preset" checked> Preset</label>
+        <label><input type="radio" name="mode" value="custom"> Custom</label>
+      </fieldset>
+
+      <div class="mode-panel" id="preset-panel">
+        <label for="preset-select">Preset</label>
+        <select id="preset-select">
+          <option value="minimal">minimal - basic properties only</option>
+          <option value="standard" selected>standard - canvas, WebGL, timezone</option>
+          <option value="comprehensive">comprehensive - all available methods</option>
+        </select>
+      </div>
+
+      <div class="mode-panel hidden" id="custom-panel">
+        <fieldset class="toggle-grid">
+          <legend>Custom methods</legend>
+          <label><input type="checkbox" name="feature" value="canvas"> Canvas</label>
+          <label><input type="checkbox" name="feature" value="webgl"> WebGL</label>
+          <label><input type="checkbox" name="feature" value="audio"> Audio</label>
+          <label><input type="checkbox" name="feature" value="fonts"> Fonts</label>
+          <label><input type="checkbox" name="feature" value="mediaDevices"> Media devices</label>
+          <label><input type="checkbox" name="feature" value="networkInfo"> Network info</label>
+          <label><input type="checkbox" name="feature" value="timezone" checked> Timezone</label>
+          <label><input type="checkbox" name="feature" value="incognitoDetection"> Incognito detection</label>
+        </fieldset>
+        <div class="number-grid">
+          <label for="timeout">Global timeout (ms)</label>
+          <input id="timeout" type="number" min="500" max="15000" step="100" value="5000">
+          <label for="method-timeout">Method timeout (ms)</label>
+          <input id="method-timeout" type="number" min="100" max="5000" step="100" value="1000">
+        </div>
+      </div>
+
+      <div class="button-row">
+        <button class="button button-strong" type="button" id="run-advanced">Run advanced fingerprint</button>
+        <button class="button button-ghost" type="button" id="copy-advanced">Copy advanced UUID</button>
+      </div>
+      <div id="advanced-status" class="status-line" aria-live="polite">Advanced fingerprinting has not run.</div>
+
+      <div class="result-grid" id="advanced-summary">
+        <div><span>UUID</span><output id="advanced-uuid">-</output></div>
+        <div><span>Confidence</span><output id="advanced-confidence">-</output></div>
+        <div><span>Duration</span><output id="advanced-duration">-</output></div>
+        <div><span>Timestamp</span><output id="advanced-timestamp">-</output></div>
+        <div><span>Enabled methods</span><output id="advanced-methods">-</output></div>
+        <div><span>Succeeded / blocked</span><output id="advanced-counts">-</output></div>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <caption>Advanced fingerprint components</caption>
+          <thead>
+            <tr>
+              <th scope="col">Component</th>
+              <th scope="col">Status</th>
+              <th scope="col">Value</th>
+              <th scope="col">Duration</th>
+            </tr>
+          </thead>
+          <tbody id="component-table">
+            <tr><td colspan="4">Run advanced fingerprinting to populate components.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel docs-panel" aria-labelledby="install-title">
+      <p class="section-kicker">Crawlable reference</p>
+      <h2 id="install-title">Install and API snippets</h2>
+      <div class="snippet-grid">
+        <article>
+          <h3>Install</h3>
+          <pre><code>npm install device-uuid</code></pre>
+        </article>
+        <article>
+          <h3>Browser script</h3>
+          <pre><code>&lt;script src="assets/index.browser.min.js"&gt;&lt;/script&gt;
+&lt;script&gt;
+  const device = new DeviceUUID();
+  const uuid = device.get();
+&lt;/script&gt;</code></pre>
+        </article>
+        <article>
+          <h3>Module usage</h3>
+          <pre><code>import { DeviceUUID } from 'device-uuid';
+
+const device = new DeviceUUID();
+const uuid = device.get('optional-custom-data');
+const details = await device.getDetailedAsync('standard');</code></pre>
+        </article>
+        <article>
+          <h3>Feature support</h3>
+          <pre><code>if (DeviceUUID.isFeatureSupported('webgl')) {
+  const details = await device.getDetailedAsync({
+    webgl: true,
+    timeout: 3000
+  });
+}</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel docs-panel" aria-labelledby="privacy-title">
+      <p class="section-kicker">Privacy and limitations</p>
+      <h2 id="privacy-title">What this page does</h2>
+      <ul class="plain-list">
+        <li>Basic UUID generation runs on page load and uses synchronous browser/device properties.</li>
+        <li>Canvas, WebGL, audio, font, media device, network, timezone, and private-mode checks run only after explicit opt-in.</li>
+        <li>The demo JavaScript performs no network requests, uses no analytics, and stores nothing.</li>
+        <li>Strict privacy modes, Tor Browser, Brave Shields, Safari ITP, and Firefox fingerprinting resistance can block or reduce advanced component values.</li>
+      </ul>
+    </section>
+  </main>
+</body>
+</html>

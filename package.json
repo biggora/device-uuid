@@ -86,7 +86,7 @@
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
     "@vitejs/plugin-react": "^5.1.2",
-    "@vitest/coverage-v8": "^4.0.5",
+    "@vitest/coverage-v8": "^4.1.8",
     "eslint": "^9.38.0",
     "happy-dom": "^20.0.10",
     "http-server": "^14.1.1",
@@ -97,6 +97,6 @@
     "tsup": "^8.5.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.46.2",
-    "vitest": "^4.0.5"
+    "vitest": "^4.1.8"
   }
 }

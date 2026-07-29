@@ -81,6 +81,7 @@
     "vite": "7.3.5"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -91,7 +92,7 @@
     "@typescript-eslint/parser": "^8.46.2",
     "@vitejs/plugin-react": "^5.1.2",
     "@vitest/coverage-v8": "^4.1.8",
-    "eslint": "^9.38.0",
+    "eslint": "^10.8.0",
     "happy-dom": "^20.0.10",
     "http-server": "^14.1.1",
     "prettier": "^3.6.2",

@@ -135,7 +135,7 @@ const convertToWordArray = (str: string): number[] => {
   const numberOfWordsTemp2 = (numberOfWordsTemp1 - (numberOfWordsTemp1 % 64)) / 64;
   const numberOfWords = (numberOfWordsTemp2 + 1) * 16;
   const wordArray: number[] = new Array(numberOfWords - 1);
-  let bytePosition = 0;
+  let bytePosition: number;
   let byteCount = 0;
 
   while (byteCount < messageLength) {
@@ -159,11 +159,10 @@ const convertToWordArray = (str: string): number[] => {
  */
 const wordToHex = (value: number): string => {
   let wordToHexValue = '';
-  let wordToHexValueTemp = '';
 
   for (let count = 0; count <= 3; count++) {
     const byte = (value >>> (count * 8)) & 255;
-    wordToHexValueTemp = '0' + byte.toString(16);
+    const wordToHexValueTemp = '0' + byte.toString(16);
     wordToHexValue = wordToHexValue + wordToHexValueTemp.substr(wordToHexValueTemp.length - 2, 2);
   }
 

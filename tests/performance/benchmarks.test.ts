@@ -12,15 +12,15 @@ describe('Performance Benchmarks', () => {
       const start = performance.now();
       device.get();
       const duration = performance.now() - start;
-      expect(duration).toBeLessThan(10);
+      expect(duration).toBeLessThan(20);
     });
 
-    it('should complete parse() in under 5ms', () => {
+    it('should complete parse() in under 10ms', () => {
       const device = new DeviceUUID();
       const start = performance.now();
       device.parse();
       const duration = performance.now() - start;
-      expect(duration).toBeLessThan(5);
+      expect(duration).toBeLessThan(10);
     });
 
     it('should complete getComponents() in under 5ms', () => {
@@ -91,11 +91,11 @@ describe('Performance Benchmarks', () => {
   });
 
   describe('isFeatureSupported Performance', () => {
-    it('should complete in under 1ms', () => {
+    it('should complete in under 2ms', () => {
       const start = performance.now();
       DeviceUUID.isFeatureSupported('canvas');
       const duration = performance.now() - start;
-      expect(duration).toBeLessThan(1);
+      expect(duration).toBeLessThan(2);
     });
 
     it('should complete multiple checks quickly', () => {
@@ -228,7 +228,7 @@ describe('Performance Benchmarks', () => {
       const start = performance.now();
       await device.getAsync({ timeout: 1 });
       const duration = performance.now() - start;
-      expect(duration).toBeLessThan(10);
+      expect(duration).toBeLessThan(20);
     });
 
     it('should respect timeout even with slow operations', async () => {

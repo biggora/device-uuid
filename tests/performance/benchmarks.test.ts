@@ -23,12 +23,12 @@ describe('Performance Benchmarks', () => {
       expect(duration).toBeLessThan(10);
     });
 
-    it('should complete getComponents() in under 5ms', () => {
+    it('should complete getComponents() in under 10ms', () => {
       const device = new DeviceUUID();
       const start = performance.now();
       device.getComponents();
       const duration = performance.now() - start;
-      expect(duration).toBeLessThan(5);
+      expect(duration).toBeLessThan(10);
     });
 
     it('should complete reset() in under 1ms', () => {

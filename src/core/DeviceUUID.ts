@@ -839,6 +839,9 @@ export class DeviceUUID {
       success: true,
     };
 
+    // Advanced collectors run concurrently, so their completion order is not
+    // stable. Keep values keyed by feature and assemble them in a fixed order
+    // below; otherwise identical fingerprints can produce different UUIDs.
     const hashes: (string | null)[] = [basicHash];
     let successCount = 1;
     let totalCount = 1;
@@ -849,6 +852,8 @@ export class DeviceUUID {
     // Canvas fingerprint
     if (resolvedOptions.canvas) {
       totalCount++;
+      const hashIndex = hashes.length;
+      hashes.push(null);
       tasks.push(
         (async () => {
           const { result, duration } = await measureAsync(() =>
@@ -861,7 +866,7 @@ export class DeviceUUID {
             duration,
           };
           if (result) {
-            hashes.push(result);
+            hashes[hashIndex] = result;
             successCount++;
           }
         })()
@@ -871,6 +876,8 @@ export class DeviceUUID {
     // WebGL fingerprint
     if (resolvedOptions.webgl) {
       totalCount++;
+      const hashIndex = hashes.length;
+      hashes.push(null);
       tasks.push(
         (async () => {
           const { result, duration } = await measureAsync(() =>
@@ -883,7 +890,7 @@ export class DeviceUUID {
             duration,
           };
           if (result) {
-            hashes.push(result);
+            hashes[hashIndex] = result;
             successCount++;
           }
         })()
@@ -893,6 +900,8 @@ export class DeviceUUID {
     // Audio fingerprint
     if (resolvedOptions.audio) {
       totalCount++;
+      const hashIndex = hashes.length;
+      hashes.push(null);
       tasks.push(
         (async () => {
           const { result, duration } = await measureAsync(() =>
@@ -905,7 +914,7 @@ export class DeviceUUID {
             duration,
           };
           if (result) {
-            hashes.push(result);
+            hashes[hashIndex] = result;
             successCount++;
           }
         })()
@@ -915,6 +924,8 @@ export class DeviceUUID {
     // Font fingerprint
     if (resolvedOptions.fonts) {
       totalCount++;
+      const hashIndex = hashes.length;
+      hashes.push(null);
       const fontList = Array.isArray(resolvedOptions.fonts) ? resolvedOptions.fonts : undefined;
       tasks.push(
         (async () => {
@@ -928,7 +939,7 @@ export class DeviceUUID {
             duration,
           };
           if (result) {
-            hashes.push(result);
+            hashes[hashIndex] = result;
             successCount++;
           }
         })()
@@ -938,6 +949,8 @@ export class DeviceUUID {
     // Media devices fingerprint
     if (resolvedOptions.mediaDevices) {
       totalCount++;
+      const hashIndex = hashes.length;
+      hashes.push(null);
       tasks.push(
         (async () => {
           const { result, duration } = await measureAsync(() => this.getMediaDevicesHash());
@@ -948,7 +961,7 @@ export class DeviceUUID {
             duration,
           };
           if (result) {
-            hashes.push(result);
+            hashes[hashIndex] = result;
             successCount++;
           }
         })()
@@ -958,6 +971,8 @@ export class DeviceUUID {
     // Network info fingerprint
     if (resolvedOptions.networkInfo) {
       totalCount++;
+      const hashIndex = hashes.length;
+      hashes.push(null);
       const { result, duration } = await measureAsync(() =>
         Promise.resolve(this.getNetworkInfoHash())
       );
@@ -968,7 +983,7 @@ export class DeviceUUID {
         duration,
       };
       if (result) {
-        hashes.push(result);
+        hashes[hashIndex] = result;
         successCount++;
       }
     }
@@ -976,6 +991,8 @@ export class DeviceUUID {
     // Timezone fingerprint
     if (resolvedOptions.timezone) {
       totalCount++;
+      const hashIndex = hashes.length;
+      hashes.push(null);
       const { result, duration } = await measureAsync(() =>
         Promise.resolve(this.getTimezoneHash())
       );
@@ -986,7 +1003,7 @@ export class DeviceUUID {
         duration,
       };
       if (result) {
-        hashes.push(result);
+        hashes[hashIndex] = result;
         successCount++;
       }
     }
@@ -994,6 +1011,8 @@ export class DeviceUUID {
     // Incognito detection
     if (resolvedOptions.incognitoDetection) {
       totalCount++;
+      const hashIndex = hashes.length;
+      hashes.push(null);
       tasks.push(
         (async () => {
           const { result, duration } = await measureAsync(() => this.detectIncognito());
@@ -1004,7 +1023,7 @@ export class DeviceUUID {
             duration,
           };
           if (result) {
-            hashes.push(result);
+            hashes[hashIndex] = result;
             successCount++;
           }
         })()
